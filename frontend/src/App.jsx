@@ -1,7 +1,11 @@
 import { useEffect, useState } from 'react'
 import './App.css'
 
-const API_URL = 'http://localhost:8080/api/students'
+const API_URL = `${import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api"}/students`
+
+const getAuthHeaders = () => ({
+  Authorization: `Bearer ${localStorage.getItem('token')}`,
+})
 
 const emptyForm = {
   name: '',
@@ -26,7 +30,12 @@ function App() {
       setLoading(true)
       setError('')
 
-      const response = await fetch(API_URL)
+      const response = await fetch(API_URL, {
+        headers: {
+        'Content-Type': 'application/json',
+          ...getAuthHeaders(),
+        },
+      })
 
       if (!response.ok) {
         throw new Error('Unable to fetch students')
@@ -126,6 +135,7 @@ function App() {
 
       const response = await fetch(`${API_URL}/${id}`, {
         method: 'DELETE',
+        headers: getAuthHeaders(),
       })
 
       if (!response.ok) {
