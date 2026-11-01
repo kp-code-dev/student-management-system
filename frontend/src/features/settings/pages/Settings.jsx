@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import PageHeader from "@/components/shared/PageHeader";
 
 const DEFAULT_PROFILE = {
@@ -38,6 +39,7 @@ function Settings() {
     localStorage.setItem("studenthub_profile", JSON.stringify(profile));
     localStorage.setItem("studenthub_notifications", String(notifications));
     setSaved(true);
+    toast.success("Settings saved successfully!");
   };
 
   useEffect(() => {

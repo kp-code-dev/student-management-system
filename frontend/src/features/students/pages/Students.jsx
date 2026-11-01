@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import {
   getAllStudents,
   createStudent,
@@ -77,9 +78,10 @@ function Students() {
 
     try {
       await deleteStudent(student.id);
+      toast.success(`Student "${student.name}" deleted successfully!`);
       await fetchStudents();
     } catch (err) {
-      alert(err.message || "Unable to delete student.");
+      toast.error(err.message || "Unable to delete student.");
     }
   };
 
@@ -103,8 +105,10 @@ function Students() {
       setSaving(true);
       if (editingStudent) {
         await updateStudent(editingStudent.id, studentData);
+        toast.success(`Student "${studentData.name}" updated successfully!`);
       } else {
         await createStudent(studentData);
+        toast.success(`Student "${studentData.name}" added successfully!`);
       }
 
       setFormData(initialForm);
@@ -113,6 +117,7 @@ function Students() {
       await fetchStudents();
     } catch (err) {
       setFormError(err.message || "Unable to save student.");
+      toast.error(err.message || "Unable to save student.");
     } finally {
       setSaving(false);
     }

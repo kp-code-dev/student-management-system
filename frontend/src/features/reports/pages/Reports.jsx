@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import PageHeader from "@/components/shared/PageHeader";
 import { getAllStudents } from "@/features/students/studentService";
 
@@ -47,6 +48,7 @@ function Reports() {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+    toast.success("CSV Report downloaded successfully!");
   };
 
   return (

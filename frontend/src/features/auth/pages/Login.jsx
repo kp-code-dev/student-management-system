@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "react-toastify";
 import {
   FiMail,
   FiLock,
@@ -59,9 +60,11 @@ function Login() {
       );
       localStorage.setItem("isAuthenticated", "true");
 
+      toast.success("Welcome back! Login successful.");
       window.location.href = "/dashboard";
     } catch (err) {
       setError(err.message || "Unable to connect to the authentication server.");
+      toast.error(err.message || "Unable to connect to the authentication server.");
     } finally {
       setLoading(false);
     }
