@@ -1,5 +1,4 @@
-
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import {
   FiGrid,
   FiUsers,
@@ -8,128 +7,147 @@ import {
   FiSettings,
   FiHelpCircle,
   FiLogOut,
-  FiChevronLeft,
 } from "react-icons/fi";
-import { LuGraduationCap } from "react-icons/lu";
 
 const navigation = [
   {
-    title: "MAIN MENU",
+    title: "WORKSPACE",
     items: [
-      { name: "Overview", path: "/dashboard", icon: FiGrid },
-      { name: "Students", path: "/students", icon: FiUsers },
-      { name: "Courses", path: "/courses", icon: FiBookOpen },
+      { name: "Overview", path: "/dashboard", icon: "dashboard" },
+      { name: "Students", path: "/students", icon: "group" },
+      { name: "Courses", path: "/courses", icon: "menu_book" },
     ],
   },
   {
-    title: "MANAGEMENT",
+    title: "ANALYTICS & MGMT",
     items: [
-      { name: "Reports", path: "/reports", icon: FiBarChart2 },
-      { name: "Settings", path: "/settings", icon: FiSettings },
+      { name: "Reports", path: "/reports", icon: "monitoring" },
+      { name: "Settings", path: "/settings", icon: "settings" },
     ],
   },
 ];
 
-function Sidebar() {
+function Sidebar({ isMobile = false, onClose }) {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    localStorage.removeItem("isAuthenticated");
+    navigate("/login");
+  };
+
+  const user = (() => {
+    try {
+      return JSON.parse(localStorage.getItem("user")) || { name: "Admin User", email: "admin@studenthub.edu" };
+    } catch {
+      return { name: "Admin User", email: "admin@studenthub.edu" };
+    }
+  })();
+
+  const asideClasses = isMobile
+    ? "h-full w-full frosted-dock rounded-[28px] p-4 flex flex-col justify-between overflow-y-auto"
+    : "fixed left-5 top-5 bottom-5 w-[256px] frosted-dock rounded-[32px] z-50 flex flex-col justify-between p-4 transition-all duration-300";
+
   return (
-    <aside className="flex h-screen w-[260px] shrink-0 flex-col border-r border-white/10 bg-[#111827]/95 px-5 py-6 text-white backdrop-blur-2xl">
-
-      {/* Brand */}
-      <div className="flex items-center gap-3 px-2">
-        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500 shadow-lg shadow-blue-500/25">
-          <LuGraduationCap size={23} />
-        </div>
-
-        <div>
-          <h1 className="text-xl font-bold tracking-tight">
-            Student<span className="text-blue-400">Hub</span>
-          </h1>
-          <p className="text-[11px] tracking-wide text-slate-400">
-            MANAGEMENT PORTAL
-          </p>
-        </div>
-      </div>
-
-      {/* Workspace */}
-      <div className="mt-10 rounded-xl border border-white/10 bg-white/[0.04] p-3">
-        <p className="text-[10px] font-semibold tracking-widest text-slate-500">
-          WORKSPACE
-        </p>
-        <div className="mt-2 flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/15 text-blue-400">
-            <FiBookOpen size={16} />
+    <aside className={asideClasses}>
+      <div className="flex flex-col">
+        {/* App Brand Pill Header */}
+        <div className="mb-6 flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.05] p-2.5 shadow-inner">
+          <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-white/20 bg-gradient-to-br from-indigo-500/30 via-cyan-400/20 to-white/10 p-1.5 shadow-lg backdrop-blur-md">
+            <span className="material-symbols-outlined text-2xl text-[#7bd0ff]">
+              local_library
+            </span>
+            <span className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-cyan-400 shadow-[0_0_10px_#22d3ee]" />
           </div>
-          <div>
-            <p className="text-sm font-medium">Main Campus</p>
-            <p className="text-[11px] text-slate-400">Academic year 2026</p>
+
+          <div className="flex min-w-0 flex-col">
+            <span className="flex items-center gap-1.5 text-[15px] font-bold tracking-tight text-white">
+              StudentHub
+              <span className="rounded-full border border-cyan-400/30 bg-cyan-400/20 px-1.5 py-0.5 font-mono text-[9px] text-cyan-300">
+                v5
+              </span>
+            </span>
+            <span className="truncate text-[11px] font-medium text-slate-400">
+              Glassy OS
+            </span>
           </div>
         </div>
-      </div>
 
-      {/* Navigation */}
-      <nav className="mt-9 flex-1 space-y-8">
-        {navigation.map((group) => (
-          <div key={group.title}>
-            <p className="mb-3 px-3 text-[10px] font-semibold tracking-[0.16em] text-slate-500">
-              {group.title}
-            </p>
+        {/* Navigation Sections */}
+        <div className="space-y-6">
+          {navigation.map((group) => (
+            <div key={group.title}>
+              <div className="mb-2 px-2 font-mono text-[10px] font-semibold tracking-widest text-slate-400/80 uppercase">
+                {group.title}
+              </div>
 
-            <div className="space-y-1">
-              {group.items.map((item) => {
-                const Icon = item.icon;
-
-                return (
+              <nav className="flex flex-col gap-1.5">
+                {group.items.map((item) => (
                   <NavLink
                     key={item.path}
                     to={item.path}
                     end={item.path === "/dashboard"}
+                    onClick={onClose}
                     className={({ isActive }) =>
-                      `group flex items-center gap-3 rounded-xl px-3 py-3 text-sm transition-all duration-200 ${
-                        isActive
-                          ? "border border-blue-400/20 bg-blue-500/15 font-semibold text-blue-300 shadow-lg shadow-blue-950/10"
-                          : "text-slate-400 hover:bg-white/[0.06] hover:text-white"
-                      }`
+                      isActive
+                        ? "group flex items-center gap-3 rounded-2xl bg-white/90 px-3.5 py-2.5 font-semibold text-slate-950 shadow-[0_4px_20px_rgba(255,255,255,0.25)] transition-all"
+                        : "group flex items-center gap-3 rounded-2xl border border-transparent px-3.5 py-2.5 text-slate-300 transition-all hover:border-white/10 hover:bg-white/[0.08] hover:text-white"
                     }
                   >
-                    <Icon size={18} />
-                    <span>{item.name}</span>
+                    {({ isActive }) => (
+                      <>
+                        <div
+                          className={`flex h-7 w-7 items-center justify-center rounded-xl transition-colors ${
+                            isActive
+                              ? "bg-slate-900/10 text-slate-950"
+                              : "bg-white/[0.04] text-slate-400 group-hover:bg-white/10 group-hover:text-white"
+                          }`}
+                        >
+                          <span className="material-symbols-outlined text-[19px]">
+                            {item.icon}
+                          </span>
+                        </div>
+                        <span className="text-[13px] tracking-tight">{item.name}</span>
+                        {isActive && (
+                          <span className="ml-auto h-1.5 w-1.5 rounded-full bg-amber-500 shadow-[0_0_8px_#f59e0b]" />
+                        )}
+                      </>
+                    )}
                   </NavLink>
-                );
-              })}
+                ))}
+              </nav>
             </div>
-          </div>
-        ))}
-      </nav>
-
-      {/* Help */}
-      <div className="mb-5 rounded-xl border border-blue-400/10 bg-blue-500/[0.07] p-3">
-        <div className="flex items-center gap-2 text-blue-300">
-          <FiHelpCircle size={17} />
-          <span className="text-sm font-medium">Need help?</span>
+          ))}
         </div>
-        <p className="mt-2 text-xs leading-5 text-slate-400">
-          Manage your academic workspace with ease.
-        </p>
       </div>
 
-      {/* Profile */}
-      <div className="flex items-center gap-3 border-t border-white/10 pt-5">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-indigo-600 font-semibold">
-          A
-        </div>
+      {/* Footer / Account Capsule */}
+      <div className="mt-6 flex flex-col gap-2 pt-3 border-t border-white/10">
+        <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] p-2">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-cyan-400 to-indigo-500 font-bold text-white text-xs shadow-md">
+              {user.name?.charAt(0) || "A"}
+              <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full border border-black bg-emerald-400 shadow-[0_0_6px_#34d399]" />
+            </div>
+            <div className="flex flex-col min-w-0">
+              <span className="truncate text-xs font-semibold text-white">
+                {user.name}
+              </span>
+              <span className="truncate text-[10px] text-slate-400">
+                {user.email}
+              </span>
+            </div>
+          </div>
 
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-medium">Admin User</p>
-          <p className="truncate text-xs text-slate-400">Administrator</p>
+          <button
+            onClick={handleLogout}
+            title="Sign out"
+            className="flex h-8 w-8 items-center justify-center rounded-xl text-slate-400 transition hover:bg-red-500/20 hover:text-red-400"
+          >
+            <span className="material-symbols-outlined text-[18px]">logout</span>
+          </button>
         </div>
-
-        <button
-          type="button"
-          title="Collapse sidebar"
-          className="text-slate-400 transition hover:text-white"
-        >
-          <FiChevronLeft size={18} />
-        </button>
       </div>
     </aside>
   );

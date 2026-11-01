@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="web_dashboard" name="shell-type"/>
+<title>StudentHub - Glassy v5 OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "surface-container-low": "#181b25",
+          "on-background": "#dfe2ef",
+          "surface-container-lowest": "#0a0e17",
+          "on-tertiary-container": "#570032",
+          "tertiary-fixed": "#ffd9e4",
+          "on-tertiary-fixed-variant": "#8c0053",
+          "on-error-container": "#ffdad6",
+          "primary-fixed": "#e1e0ff",
+          "on-secondary-fixed": "#001e2c",
+          "secondary-fixed-dim": "#7bd0ff",
+          "primary": "#c0c1ff",
+          "on-error": "#690005",
+          "error-container": "#93000a",
+          "surface": "#0f131c",
+          "primary-container": "#8083ff",
+          "background": "#0f131c",
+          "on-primary": "#1000a9",
+          "on-primary-fixed": "#07006c",
+          "surface-container-high": "#262a34",
+          "on-tertiary": "#640039",
+          "inverse-on-surface": "#2c303a",
+          "on-secondary-container": "#00374d",
+          "inverse-surface": "#dfe2ef",
+          "surface-container": "#1c1f29",
+          "on-secondary-fixed-variant": "#004c69",
+          "surface-bright": "#353943",
+          "surface-dim": "#0f131c",
+          "on-primary-fixed-variant": "#2f2ebe",
+          "outline-variant": "#464554",
+          "secondary-fixed": "#c4e7ff",
+          "surface-container-highest": "#31353f",
+          "on-tertiary-fixed": "#3e0022",
+          "error": "#ffb4ab",
+          "on-surface": "#dfe2ef",
+          "surface-tint": "#c0c1ff",
+          "surface-variant": "#31353f",
+          "tertiary-fixed-dim": "#ffb0cd",
+          "outline": "#908fa0",
+          "tertiary": "#ffb0cd",
+          "inverse-primary": "#494bd6",
+          "secondary-container": "#00a6e0",
+          "on-secondary": "#00354a",
+          "tertiary-container": "#f751a1",
+          "primary-fixed-dim": "#c0c1ff",
+          "on-surface-variant": "#c7c4d7",
+          "secondary": "#7bd0ff",
+          "on-primary-container": "#0d0096"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.25rem",
+          "lg": "0.5rem",
+          "xl": "0.75rem",
+          "full": "9999px"
+        },
+        "spacing": {
+          "space-md": "1rem",
+          "margin": "2rem",
+          "space-xl": "2.5rem",
+          "gutter": "1.5rem",
+          "margin-mobile": "1rem",
+          "space-lg": "1.5rem",
+          "space-xs": "0.25rem",
+          "space-sm": "0.5rem",
+          "gutter-mobile": "0.75rem"
+        },
+        "fontFamily": {
+          "headline-md": ["Plus Jakarta Sans"],
+          "body-lg": ["Plus Jakarta Sans"],
+          "body-sm": ["Plus Jakarta Sans"],
+          "headline-lg": ["Plus Jakarta Sans"],
+          "headline-xl-mobile": ["Plus Jakarta Sans"],
+          "body-md": ["Plus Jakarta Sans"],
+          "label-sm": ["JetBrains Mono"],
+          "label-md": ["JetBrains Mono"],
+          "headline-sm": ["Plus Jakarta Sans"],
+          "headline-xl": ["Plus Jakarta Sans"],
+          "display-lg": ["Plus Jakarta Sans"],
+          "display-lg-mobile": ["Plus Jakarta Sans"],
+          "label-lg": ["JetBrains Mono"]
+        },
+        "fontSize": {
+          "headline-md": ["22px", {"lineHeight": "30px", "letterSpacing": "-0.015em", "fontWeight": "600"}],
+          "body-lg": ["16px", {"lineHeight": "26px", "letterSpacing": "-0.005em", "fontWeight": "400"}],
+          "body-sm": ["12px", {"lineHeight": "18px", "letterSpacing": "0.005em", "fontWeight": "400"}],
+          "headline-lg": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+          "headline-xl-mobile": ["28px", {"lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "600"}],
+          "body-md": ["14px", {"lineHeight": "22px", "letterSpacing": "0em", "fontWeight": "400"}],
+          "label-sm": ["10px", {"lineHeight": "14px", "letterSpacing": "0.08em", "fontWeight": "500"}],
+          "label-md": ["11px", {"lineHeight": "16px", "letterSpacing": "0.06em", "fontWeight": "500"}],
+          "headline-sm": ["18px", {"lineHeight": "26px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+          "headline-xl": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.025em", "fontWeight": "600"}],
+          "display-lg": ["56px", {"lineHeight": "64px", "letterSpacing": "-0.03em", "fontWeight": "700"}],
+          "display-lg-mobile": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "label-lg": ["13px", {"lineHeight": "18px", "letterSpacing": "0.04em", "fontWeight": "500"}]
+        }
+      }
+    }
+  }
+  </script>
+<style>
+    @layer base {
+      html, body {
+        margin: 0;
+        padding: 0;
+        background-color: #0a0e17;
+      }
+      body {
+        overscroll-behavior: none;
+      }
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    .aether-dock {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(15, 23, 42, 0.72) 100%);
+      backdrop-filter: blur(28px) saturate(190%);
+      -webkit-backdrop-filter: blur(28px) saturate(190%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: 0 24px 60px -15px rgba(0, 0, 0, 0.75), inset 0 1px 1px 0 rgba(255, 255, 255, 0.18);
+    }
+    .aether-pill {
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(18px) saturate(160%);
+      -webkit-backdrop-filter: blur(18px) saturate(160%);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
+    }
+    .ambient-void-glow-1 {
+      position: fixed;
+      top: -15%;
+      left: 12%;
+      width: 620px;
+      height: 620px;
+      border-radius: 9999px;
+      background: radial-gradient(circle, rgba(128, 131, 255, 0.22) 0%, rgba(73, 75, 214, 0.06) 50%, transparent 70%);
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .ambient-void-glow-2 {
+      position: fixed;
+      top: 30%;
+      right: 2%;
+      width: 680px;
+      height: 680px;
+      border-radius: 9999px;
+      background: radial-gradient(circle, rgba(0, 166, 224, 0.18) 0%, rgba(123, 208, 255, 0.05) 50%, transparent 70%);
+      filter: blur(90px);
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface font-headline-md selection:bg-secondary selection:text-surface-container-lowest min-h-screen relative">
+<div class="ambient-void-glow-1"></div>
+<div class="ambient-void-glow-2"></div>
+<!-- FLOATING FROSTED GLASS SIDEBAR DOCK -->
+<aside class="fixed left-space-lg top-space-lg bottom-space-lg w-64 aether-dock rounded-xl z-50 flex flex-col justify-between p-space-md transition-all duration-300">
+<div class="flex flex-col gap-space-lg">
+<!-- App Brand Pill -->
+<div class="flex items-center gap-space-sm p-space-xs rounded-lg aether-pill">
+<div class="w-9 h-9 rounded-lg bg-surface-container-high/60 border border-outline-variant/30 flex items-center justify-center p-1.5 shadow-sm">
+<img alt="StudentHub Brand Logo" class="h-full w-auto object-contain" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOaTIMyonrmgViKZ302YqoqpgkIMlW00dkVUC6aCuPyxYohJuZYxQl2WCmY-oIuX8o1O-kca9buX69q0PZk6-phe4L1UM5xApq5QHADnbK4ysjWnmg2L2qNvXcp9yJbVK0MkirH8_amccKWhv6d16tQhWpycMZzlLc-F1hbPybqOQxi83LKqW3LfM85J6iQ1QHa24kzPr6UCxWYPIjAhH3TonmOwhgWnHzc0i78Hk3"/>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-headline-sm text-headline-sm text-on-surface tracking-tight leading-tight flex items-center gap-1.5">
+            StudentHub
+            <span class="font-label-sm text-label-sm px-1 py-0.5 rounded-full bg-secondary-container/20 text-secondary border border-secondary-container/40">v5</span>
+</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant truncate">Glassy OS</span>
+</div>
+</div>
+<!-- Workspace Section -->
+<div>
+<div class="px-space-xs mb-space-xs font-label-sm text-label-sm uppercase tracking-widest text-outline font-medium">Workspace</div>
+<nav class="flex flex-col gap-1" data-active-classes="bg-surface-container-high/90 text-on-surface font-semibold shadow-inner border border-outline-variant/40">
+<a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 font-body-md text-body-md transition-all" data-path="overview" href="#">Overview</a>
+<a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 font-body-md text-body-md transition-all" data-path="students" href="#">Students</a>
+<a aria-current="page" class="flex items-center px-space-md py-space-sm rounded-lg transition-all bg-surface-container-high/90 text-on-surface font-semibold shadow-inner border border-outline-variant/40" data-path="courses" href="#">Courses</a>
+</nav>
+</div>
+<!-- Governance & Admin Section -->
+<div>
+<div class="px-space-xs mb-space-xs font-label-sm text-label-sm uppercase tracking-widest text-outline font-medium">Governance &amp; Admin</div>
+<nav class="flex flex-col gap-1" data-active-classes="bg-surface-container-high/90 text-on-surface font-semibold shadow-inner border border-outline-variant/40">
+<a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 font-body-md text-body-md transition-all" data-path="reports" href="#">Reports</a>
+<a class="flex items-center px-space-md py-space-sm rounded-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container/50 font-body-md text-body-md transition-all" data-path="settings" href="#">Settings</a>
+</nav>
+</div>
+</div>
+<!-- Bottom Profile Glass Pill -->
+<div class="flex items-center gap-space-sm p-space-xs rounded-lg aether-pill hover:bg-surface-container/60 transition-all cursor-pointer">
+<div class="relative flex-shrink-0">
+<img alt="Dr. Eleanor Vance" class="w-8 h-8 rounded-full object-cover ring-1 ring-outline-variant/50" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCErYs_06gQCQ7GfsHqZCrrPXGGjgfLs57pdGBNte4qpS0POEkqwxpzsVKpWW5B37HIE9GCDKwcqZrkRejDCWIzLQYa873PsdUKvGyV6LEfc9Dx0iko2IZhtOw2xz3vbWzl7mETG8wpSQ9_ZGqttZrR2Ieq5IT4W2Up5p6ulweD9S1U_ngsUVIAqTq1UjqngaQmb4s38KWyiu3eVoYjIATt5_53xDTsaz0Osd2bpVhy"/>
+<span class="absolute bottom-0 right-0 w-2 h-2 rounded-full bg-secondary shadow-[0_0_6px_#7bd0ff]"></span>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="font-body-md text-body-md font-semibold text-on-surface truncate leading-tight">Eleanor Vance</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant truncate">Registrar Director</span>
+</div>
+<span class="material-symbols-outlined text-outline text-[18px]">unfold_more</span>
+</div>
+</aside>
+<!-- MAIN WRAPPER WITH FROSTED TOPBAR -->
+<div class="pl-80 pr-space-lg pt-space-lg pb-space-xl min-h-screen relative z-10 flex flex-col gap-space-lg">
+<!-- FLOATING TOPBAR DOCK -->
+<header class="aether-dock rounded-xl h-16 px-space-lg flex items-center justify-between sticky top-space-lg z-40">
+<!-- Global Search Pill -->
+<div class="flex items-center gap-space-md flex-1 max-w-md">
+<div class="relative flex items-center w-full">
+<span class="material-symbols-outlined absolute left-space-md text-outline text-[18px] pointer-events-none">search</span>
+<input class="w-full bg-surface-container-lowest/40 border border-outline-variant/30 pl-10 pr-space-xl py-space-xs rounded-full font-body-sm text-body-sm text-on-surface placeholder:text-outline focus:outline-none focus:border-secondary transition-all shadow-inner" placeholder="Search academic registry, courses, IDs..." type="text"/>
+<kbd class="absolute right-space-md px-1.5 py-0.5 rounded aether-pill font-label-sm text-label-sm text-outline">⌘K</kbd>
+</div>
+</div>
+<!-- Action Controls & User Pill -->
+<div class="flex items-center gap-space-md">
+<div class="flex items-center gap-space-xs px-space-md py-space-xs rounded-full aether-pill">
+<span class="w-2 h-2 rounded-full bg-secondary-container animate-pulse shadow-[0_0_8px_#00a6e0]"></span>
+<span class="font-label-md text-label-md text-secondary">Fall Term 2025</span>
+</div>
+<button aria-label="Notifications" class="w-9 h-9 rounded-full aether-pill flex items-center justify-center text-on-surface hover:text-white transition-all" type="button">
+<span class="material-symbols-outlined text-[19px]">notifications</span>
+</button>
+<div class="h-5 w-[1px] bg-outline-variant/40"></div>
+<div class="flex items-center gap-space-xs pl-space-xs pr-space-md py-space-xs rounded-full aether-pill cursor-pointer hover:bg-surface-container/60 transition-all">
+<img alt="Eleanor Vance profile" class="w-6 h-6 rounded-full object-cover ring-1 ring-outline-variant/40" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCErYs_06gQCQ7GfsHqZCrrPXGGjgfLs57pdGBNte4qpS0POEkqwxpzsVKpWW5B37HIE9GCDKwcqZrkRejDCWIzLQYa873PsdUKvGyV6LEfc9Dx0iko2IZhtOw2xz3vbWzl7mETG8wpSQ9_ZGqttZrR2Ieq5IT4W2Up5p6ulweD9S1U_ngsUVIAqTq1UjqngaQmb4s38KWyiu3eVoYjIATt5_53xDTsaz0Osd2bpVhy"/>
+<span class="font-body-sm text-body-sm font-semibold text-on-surface">Eleanor Vance</span>
+<span class="material-symbols-outlined text-outline text-[16px]">expand_more</span>
+</div>
+</div>
+</header>
+<!-- MAIN CONTENT SLOT -->
+<main class="pt-16 flex flex-col gap-space-lg"><div class="flex flex-col w-full gap-space-lg relative">
+<!-- AMBIENT DEPTH BACKDROPS (INTERNAL SCENIC GLOWS) -->
+<div class="absolute -top-12 left-1/4 w-96 h-96 rounded-full bg-primary-container/10 blur-[100px] pointer-events-none -z-10"></div>
+<div class="absolute top-80 right-10 w-[480px] h-[480px] rounded-full bg-secondary-container/10 blur-[120px] pointer-events-none -z-10"></div>
+<!-- HEADER & PRIMARY ACTIONS SECTION -->
+<section class="flex flex-col lg:flex-row lg:items-end justify-between gap-space-md w-full"><div class="flex flex-col gap-1.5">
+<div class="flex items-center gap-space-xs">
+<span class="px-2 py-0.5 rounded-full aether-pill font-label-sm text-label-sm uppercase tracking-widest text-secondary flex items-center gap-1.5 shadow-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>Academic Portal
+    </span>
+<span class="font-label-sm text-label-sm text-outline">/</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-medium">Courses</span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-on-surface tracking-tight font-bold">Courses</h1>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">List of available courses and enrolled student counts.</p>
+</div>
+<div class="flex items-center gap-space-sm">
+<button class="h-11 px-space-lg rounded-full bg-gradient-to-r from-primary-container via-inverse-primary to-secondary-container text-white font-headline-sm text-body-md font-semibold flex items-center gap-space-xs shadow-[0_10px_30px_-5px_rgba(128,131,255,0.4)] hover:shadow-[0_14px_38px_0_rgba(128,131,255,0.6)] hover:scale-[1.02] active:scale-95 transition-all" type="button">
+<span class="material-symbols-outlined text-[20px]">add_circle</span>
+<span>+ Add Course</span>
+</button>
+</div></section>
+<!-- METRICS CAPSULES STRIP (INSPIRED BY SCREEN_4 FROSTED GAUGES) -->
+<!-- SEARCH, FACULTY TAXONOMY & VIEW SELECTOR STRIP -->
+<section class="aether-dock p-space-sm rounded-xl flex flex-col md:flex-row items-stretch md:items-center justify-between gap-space-sm shadow-md"><div class="relative flex items-center w-full max-w-md">
+<span class="material-symbols-outlined absolute left-space-md text-outline text-[18px]">search</span>
+<input class="w-full bg-surface-container-lowest/50 text-on-surface placeholder:text-outline font-body-sm text-body-sm pl-10 pr-space-md py-2.5 rounded-full focus:outline-none focus:bg-surface-container-lowest transition-all" id="courseSearchInput" placeholder="Search courses by name or code..." type="text"/>
+</div>
+<div class="flex items-center gap-space-xs text-on-surface-variant font-body-sm text-body-sm px-space-sm">
+<span class="material-symbols-outlined text-secondary text-[18px]">info</span>
+<span>Showing active registered programs</span>
+</div></section>
+<!-- COURSE CARDS 3-COLUMN FROSTED GLASS BENTO GRID -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-lg w-full"><!-- CARD 1: MCA -->
+<article class="aether-dock p-space-lg rounded-xl flex flex-col justify-between gap-space-md group hover:scale-[1.01] hover:shadow-[0_20px_50px_-10px_rgba(0,166,224,0.25)] transition-all duration-300">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="px-2.5 py-1 rounded-full aether-pill font-label-md text-label-md text-secondary tracking-wide uppercase font-semibold">MCA-101</span>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-outline">schedule</span>
+<span>2 Years</span>
+</div>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight group-hover:text-secondary transition-colors">Master of Computer Applications</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Postgraduate degree in advanced computing.</p>
+</div>
+<div class="aether-pill p-space-sm rounded-lg flex items-center justify-between mt-1">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]">groups</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Enrolled Students</span>
+</div>
+<span class="font-headline-sm text-headline-sm text-secondary font-bold">35</span>
+</div>
+</div>
+<button class="h-9 w-full px-space-sm rounded-full aether-pill bg-primary/10 hover:bg-primary/20 text-primary font-body-sm text-body-sm font-medium flex items-center justify-center gap-1 transition-all" type="button">
+<span class="material-symbols-outlined text-[16px]">person_search</span>
+<span>View Students</span>
+</button>
+</article>
+<!-- CARD 2: B.Tech CS -->
+<article class="aether-dock p-space-lg rounded-xl flex flex-col justify-between gap-space-md group hover:scale-[1.01] hover:shadow-[0_20px_50px_-10px_rgba(128,131,255,0.25)] transition-all duration-300">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="px-2.5 py-1 rounded-full aether-pill font-label-md text-label-md text-primary tracking-wide uppercase font-semibold">BT-201</span>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-outline">schedule</span>
+<span>4 Years</span>
+</div>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight group-hover:text-primary transition-colors">B.Tech Computer Science</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Undergraduate engineering in software systems.</p>
+</div>
+<div class="aether-pill p-space-sm rounded-lg flex items-center justify-between mt-1">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-primary text-[20px]">groups</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Enrolled Students</span>
+</div>
+<span class="font-headline-sm text-headline-sm text-primary font-bold">42</span>
+</div>
+</div>
+<button class="h-9 w-full px-space-sm rounded-full aether-pill bg-primary/10 hover:bg-primary/20 text-primary font-body-sm text-body-sm font-medium flex items-center justify-center gap-1 transition-all" type="button">
+<span class="material-symbols-outlined text-[16px]">person_search</span>
+<span>View Students</span>
+</button>
+</article>
+<!-- CARD 3: BCA -->
+<article class="aether-dock p-space-lg rounded-xl flex flex-col justify-between gap-space-md group hover:scale-[1.01] hover:shadow-[0_20px_50px_-10px_rgba(0,166,224,0.25)] transition-all duration-300">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="px-2.5 py-1 rounded-full aether-pill font-label-md text-label-md text-secondary tracking-wide uppercase font-semibold">BCA-102</span>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-outline">schedule</span>
+<span>3 Years</span>
+</div>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight group-hover:text-secondary transition-colors">Bachelor of Computer Applications</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Foundations of programming and database design.</p>
+</div>
+<div class="aether-pill p-space-sm rounded-lg flex items-center justify-between mt-1">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary text-[20px]">groups</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Enrolled Students</span>
+</div>
+<span class="font-headline-sm text-headline-sm text-secondary font-bold">28</span>
+</div>
+</div>
+<button class="h-9 w-full px-space-sm rounded-full aether-pill bg-primary/10 hover:bg-primary/20 text-primary font-body-sm text-body-sm font-medium flex items-center justify-center gap-1 transition-all" type="button">
+<span class="material-symbols-outlined text-[16px]">person_search</span>
+<span>View Students</span>
+</button>
+</article>
+<!-- CARD 4: M.Sc IT -->
+<article class="aether-dock p-space-lg rounded-xl flex flex-col justify-between gap-space-md group hover:scale-[1.01] hover:shadow-[0_20px_50px_-10px_rgba(247,81,161,0.25)] transition-all duration-300">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="px-2.5 py-1 rounded-full aether-pill font-label-md text-label-md text-tertiary-fixed-dim tracking-wide uppercase font-semibold">MS-301</span>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-outline">schedule</span>
+<span>2 Years</span>
+</div>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight group-hover:text-tertiary transition-colors">M.Sc Information Technology</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Cloud computing, enterprise networking &amp; security.</p>
+</div>
+<div class="aether-pill p-space-sm rounded-lg flex items-center justify-between mt-1">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-tertiary text-[20px]">groups</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Enrolled Students</span>
+</div>
+<span class="font-headline-sm text-headline-sm text-tertiary font-bold">20</span>
+</div>
+</div>
+<button class="h-9 w-full px-space-sm rounded-full aether-pill bg-primary/10 hover:bg-primary/20 text-primary font-body-sm text-body-sm font-medium flex items-center justify-center gap-1 transition-all" type="button">
+<span class="material-symbols-outlined text-[16px]">person_search</span>
+<span>View Students</span>
+</button>
+</article>
+<!-- CARD 5: Data Science -->
+<article class="aether-dock p-space-lg rounded-xl flex flex-col justify-between gap-space-md group hover:scale-[1.01] hover:shadow-[0_20px_50px_-10px_rgba(123,208,255,0.25)] transition-all duration-300">
+<div class="flex flex-col gap-space-sm">
+<div class="flex items-center justify-between">
+<span class="px-2.5 py-1 rounded-full aether-pill font-label-md text-label-md text-secondary-fixed tracking-wide uppercase font-semibold">DS-202</span>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px] text-outline">schedule</span>
+<span>3 Years</span>
+</div>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface font-semibold tracking-tight group-hover:text-secondary-fixed transition-colors">B.Sc Data Science</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">Applied statistics, machine learning &amp; big data.</p>
+</div>
+<div class="aether-pill p-space-sm rounded-lg flex items-center justify-between mt-1">
+<div class="flex items-center gap-space-xs">
+<span class="material-symbols-outlined text-secondary-fixed text-[20px]">groups</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">Enrolled Students</span>
+</div>
+<span class="font-headline-sm text-headline-sm text-secondary-fixed font-bold">18</span>
+</div>
+</div>
+<button class="h-9 w-full px-space-sm rounded-full aether-pill bg-primary/10 hover:bg-primary/20 text-primary font-body-sm text-body-sm font-medium flex items-center justify-center gap-1 transition-all" type="button">
+<span class="material-symbols-outlined text-[16px]">person_search</span>
+<span>View Students</span>
+</button>
+</article></section>
+<!-- BOTTOM UTILITY BAR & FROSTED PAGINATION -->
+<section class="aether-dock px-space-lg py-space-sm rounded-xl flex flex-col sm:flex-row items-center justify-between gap-space-md shadow-md">
+<!-- Live Sync Status -->
+<div class="flex items-center gap-space-sm">
+<div class="flex items-center gap-2 aether-pill px-3 py-1 rounded-full">
+<span class="w-2 h-2 rounded-full bg-secondary-container shadow-[0_0_8px_#00a6e0]"></span>
+<span class="font-label-sm text-label-sm text-secondary font-medium">Database Synced: 12ms</span>
+</div>
+<span class="font-body-sm text-body-sm text-on-surface-variant hidden md:inline">Showing 5 courses</span>
+</div>
+<!-- Frosted Glass Pagination Controls -->
+<div class="flex items-center gap-1.5">
+<button class="w-8 h-8 rounded-full aether-pill flex items-center justify-center text-outline hover:text-on-surface transition-colors" title="Previous Page" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<div class="flex items-center gap-1">
+<button class="w-8 h-8 rounded-full aether-pill bg-primary/20 text-primary font-label-sm text-label-sm font-semibold flex items-center justify-center shadow-inner" type="button">
+          1
+        </button>
+<button class="w-8 h-8 rounded-full aether-pill text-outline hover:text-on-surface font-label-sm text-label-sm flex items-center justify-center transition-colors" type="button">
+          2
+        </button>
+<button class="w-8 h-8 rounded-full aether-pill text-outline hover:text-on-surface font-label-sm text-label-sm flex items-center justify-center transition-colors" type="button">
+          3
+        </button>
+<span class="text-outline font-label-sm px-1">...</span>
+<button class="w-8 h-8 rounded-full aether-pill text-outline hover:text-on-surface font-label-sm text-label-sm flex items-center justify-center transition-colors" type="button">
+          4
+        </button>
+</div>
+<button class="w-8 h-8 rounded-full aether-pill flex items-center justify-center text-outline hover:text-on-surface transition-colors" title="Next Page" type="button">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</section>
+</div>
+<script>
+  // Filter pills interactive state switch
+  document.querySelectorAll('.filter-pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('.filter-pill').forEach(p => {
+        p.classList.remove('bg-primary/20', 'text-primary');
+        p.classList.add('text-on-surface-variant');
+        const dot = p.querySelector('span');
+        if (dot) dot.remove();
+      });
+      pill.classList.remove('text-on-surface-variant');
+      pill.classList.add('bg-primary/20', 'text-primary');
+      if (!pill.querySelector('span')) {
+        const dot = document.createElement('span');
+        dot.className = 'w-1.5 h-1.5 rounded-full bg-primary shadow-[0_0_6px_#c0c1ff]';
+        pill.prepend(dot);
+      }
+    });
+  });
+
+  // Client-side quick filter
+  const searchInput = document.getElementById('courseSearchInput');
+  if (searchInput) {
+    searchInput.addEventListener('input', (e) => {
+      const query = e.target.value.toLowerCase().trim();
+      document.querySelectorAll('article').forEach(card => {
+        const text = card.innerText.toLowerCase();
+        if (text.includes(query)) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  }
+</script></main>
+</div>
+</body></html>

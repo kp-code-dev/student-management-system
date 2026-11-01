@@ -1,11 +1,4 @@
-
 import { useEffect, useState } from "react";
-
-import {
-  FiUserPlus,
-  FiClock,
-} from "react-icons/fi";
-
 import { getAllStudents } from "@/features/students/studentService";
 
 function RecentActivity() {
@@ -19,7 +12,7 @@ function RecentActivity() {
 
         const recentStudents = (Array.isArray(data) ? data : [])
           .sort((a, b) => Number(b.id) - Number(a.id))
-          .slice(0, 5);
+          .slice(0, 4);
 
         setStudents(recentStudents);
       } catch (error) {
@@ -33,57 +26,77 @@ function RecentActivity() {
   }, []);
 
   return (
-    <section className="rounded-2xl border border-white/80 bg-white/75 p-5 shadow-[0_8px_30px_rgba(15,23,42,0.04)] backdrop-blur-xl">
+    <section className="frosted-panel relative flex h-full flex-col justify-between overflow-hidden rounded-3xl p-5 md:p-6">
+      <div className="pointer-events-none absolute -bottom-10 -right-10 h-44 w-44 rounded-full bg-indigo-500/10 blur-3xl" />
 
-      <div className="mb-6 flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-bold text-slate-900">
-            Recent Activity
-          </h2>
+      <div>
+        <div className="mb-5 flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-mono text-[11px] font-semibold uppercase tracking-wider text-amber-400">
+                System Log
+              </span>
+              <span className="h-1.5 w-1.5 rounded-full bg-amber-400" />
+            </div>
+            <h2 className="mt-1 text-xl font-bold tracking-tight text-white">
+              Recent Activity
+            </h2>
+          </div>
 
-          <p className="mt-1 text-sm text-slate-500">
-            Recently registered students
-          </p>
+          <span className="material-symbols-outlined text-[20px] text-slate-400">
+            schedule
+          </span>
         </div>
 
-        <FiClock className="text-slate-400" size={19} />
+        <div className="space-y-3.5">
+          {loading ? (
+            <p className="py-8 text-center text-xs text-slate-400">
+              Loading activity logs...
+            </p>
+          ) : students.length === 0 ? (
+            <p className="py-8 text-center text-xs text-slate-400">
+              No recent admissions logged.
+            </p>
+          ) : (
+            students.map((student) => (
+              <div
+                key={student.id}
+                className="group flex items-start gap-3 rounded-2xl border border-white/[0.06] bg-white/[0.03] p-3 transition-colors hover:border-white/10 hover:bg-white/[0.06]"
+              >
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-cyan-400/30 bg-cyan-500/15 text-cyan-300">
+                  <span className="material-symbols-outlined text-[18px]">
+                    person_add
+                  </span>
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between">
+                    <h3 className="truncate text-xs font-semibold text-white">
+                      {student.name}
+                    </h3>
+                    <span className="font-mono text-[10px] text-slate-400">
+                      ID #{student.id}
+                    </span>
+                  </div>
+
+                  <p className="mt-0.5 truncate text-[11px] text-slate-300">
+                    Enrolled into <span className="text-cyan-300">{student.course || "General"}</span>
+                  </p>
+
+                  <p className="mt-1 font-mono text-[10px] text-slate-500">
+                    {student.email}
+                  </p>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
       </div>
 
-      <div className="space-y-5">
-        {loading ? (
-          <p className="py-6 text-center text-sm text-slate-500">
-            Loading recent students...
-          </p>
-        ) : students.length === 0 ? (
-          <p className="py-6 text-center text-sm text-slate-500">
-            No student records available.
-          </p>
-        ) : (
-          students.map((student) => (
-            <div
-              key={student.id}
-              className="flex items-start gap-3"
-            >
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                <FiUserPlus size={18} />
-              </div>
-
-              <div className="min-w-0 flex-1">
-                <h3 className="text-sm font-semibold text-slate-800">
-                  New student registered
-                </h3>
-
-                <p className="mt-1 text-xs text-slate-500">
-                  {student.name} joined {student.course || "a course"}
-                </p>
-
-                <p className="mt-2 text-[11px] text-slate-400">
-                  Student ID: #{student.id}
-                </p>
-              </div>
-            </div>
-          ))
-        )}
+      <div className="mt-4 border-t border-white/[0.08] pt-3 text-right">
+        <span className="font-mono text-[10px] text-slate-500">
+          LOG STREAM · VERIFIED
+        </span>
       </div>
     </section>
   );

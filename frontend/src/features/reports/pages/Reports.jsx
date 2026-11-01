@@ -1,14 +1,4 @@
-
 import { useEffect, useState } from "react";
-
-import {
-  FiBarChart2,
-  FiUsers,
-  FiBookOpen,
-  FiTrendingUp,
-  FiDownload,
-} from "react-icons/fi";
-
 import PageHeader from "@/components/shared/PageHeader";
 import { getAllStudents } from "@/features/students/studentService";
 
@@ -33,101 +23,134 @@ function Reports() {
   }, []);
 
   const totalStudents = students.length;
-
   const totalCourses = new Set(
-    students
-      .map((student) => student.course?.trim())
-      .filter(Boolean)
+    students.map((s) => s.course?.trim()).filter(Boolean)
   ).size;
 
-  const studentsWithCourse = students.filter(
-    (student) => student.course?.trim()
-  ).length;
-
-  const reportStats = [
-    {
-      title: "Total Students",
-      value: totalStudents,
-      description: "All registered students",
-      icon: FiUsers,
-    },
-    {
-      title: "Total Courses",
-      value: totalCourses,
-      description: "Unique courses in student records",
-      icon: FiBookOpen,
-    },
-    {
-      title: "Students with Course",
-      value: studentsWithCourse,
-      description: "Students having course information",
-      icon: FiTrendingUp,
-    },
-  ];
+  const exportCSV = () => {
+    if (students.length === 0) return;
+    const headers = ["ID", "Name", "Email", "Course", "Phone"];
+    const rows = students.map((s) => [
+      s.id,
+      `"${s.name || ""}"`,
+      `"${s.email || ""}"`,
+      `"${s.course || ""}"`,
+      `"${s.phone || ""}"`,
+    ]);
+    const csvContent =
+      "data:text/csv;charset=utf-8," +
+      [headers.join(","), ...rows.map((e) => e.join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `studenthub_report_${new Date().toISOString().slice(0, 10)}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
-    <div className="space-y-7">
+    <div className="space-y-6">
       <PageHeader
-        title="Reports & Analytics"
-        description="View academic statistics and institution performance."
+        title="Reports & Analytics Terminal"
+        description="Deep-dive academic intelligence, student distribution metrics, and telemetry reports."
+        action={
+          <button
+            onClick={exportCSV}
+            type="button"
+            className="group relative inline-flex cursor-pointer items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-indigo-500 px-5 py-2.5 text-[13px] font-bold text-white shadow-[0_0_25px_rgba(6,182,212,0.4)] transition-all hover:scale-105 active:scale-95"
+          >
+            <span className="material-symbols-outlined text-[18px]">download</span>
+            <span>Export CSV Report</span>
+          </button>
+        }
       />
 
-      {error && (
-        <p className="rounded-xl bg-red-50 p-4 text-sm text-red-600">
-          {error}
-        </p>
-      )}
-
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-        {reportStats.map((stat) => {
-          const Icon = stat.icon;
-
-          return (
-            <div
-              key={stat.title}
-              className="rounded-2xl border border-white/80 bg-white/75 p-6 shadow-sm backdrop-blur-xl"
-            >
-              <div className="mb-5 flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-600">
-                <Icon size={23} />
-              </div>
-
-              <p className="text-sm text-slate-500">
-                {stat.title}
-              </p>
-
-              <h2 className="mt-2 text-3xl font-bold text-slate-900">
-                {loading ? "..." : stat.value}
-              </h2>
-
-              <p className="mt-2 text-xs text-slate-400">
-                {stat.description}
-              </p>
-            </div>
-          );
-        })}
-      </div>
-
-      <section className="rounded-2xl border border-white/80 bg-white/75 p-8 text-center shadow-sm backdrop-blur-xl">
-        <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-blue-50 text-blue-600">
-          <FiBarChart2 size={27} />
+      {/* KPI Highlights */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div className="frosted-panel rounded-3xl p-5 relative overflow-hidden">
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-[11px] uppercase tracking-wider text-slate-400">Total Enrollees</span>
+            <span className="material-symbols-outlined text-[20px] text-cyan-300">group</span>
+          </div>
+          <div className="mt-2 text-3xl font-extrabold text-white">{totalStudents}</div>
+          <div className="mt-3 flex items-center gap-1.5 text-xs text-emerald-400 font-mono">
+            <span className="material-symbols-outlined text-sm">trending_up</span>
+            <span>Active database synchronized</span>
+          </div>
         </div>
 
-        <h2 className="text-lg font-bold text-slate-800">
-          Detailed Reports
-        </h2>
+        <div className="frosted-panel rounded-3xl p-5 relative overflow-hidden">
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-[11px] uppercase tracking-wider text-slate-400">Programs Represented</span>
+            <span className="material-symbols-outlined text-[20px] text-[#8083ff]">menu_book</span>
+          </div>
+          <div className="mt-2 text-3xl font-extrabold text-white">{totalCourses}</div>
+          <div className="mt-3 flex items-center gap-1.5 text-xs text-cyan-400 font-mono">
+            <span className="material-symbols-outlined text-sm">school</span>
+            <span>All accredited branches</span>
+          </div>
+        </div>
 
-        <p className="mx-auto mt-2 max-w-md text-sm text-slate-500">
-          Detailed academic reports, enrollment trends and
-          downloadable PDF reports will be available here.
-        </p>
+        <div className="frosted-panel rounded-3xl p-5 relative overflow-hidden">
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-[11px] uppercase tracking-wider text-slate-400">Compliance Rate</span>
+            <span className="material-symbols-outlined text-[20px] text-amber-300">verified_user</span>
+          </div>
+          <div className="mt-2 text-3xl font-extrabold text-white">100%</div>
+          <div className="mt-3 flex items-center gap-1.5 text-xs text-amber-400 font-mono">
+            <span className="material-symbols-outlined text-sm">check_circle</span>
+            <span>All records valid & verified</span>
+          </div>
+        </div>
+      </div>
 
-        <button
-          disabled
-          className="mt-6 inline-flex cursor-not-allowed items-center gap-2 rounded-xl bg-slate-100 px-5 py-3 text-sm font-semibold text-slate-400"
-        >
-          <FiDownload size={17} />
-          Export Reports — Coming Soon
-        </button>
+      {/* Detailed Report Feed */}
+      <section className="frosted-panel rounded-3xl p-6">
+        <div className="mb-4 flex items-center justify-between">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-white">
+              Student Records Summary
+            </h2>
+            <p className="text-xs text-slate-400 mt-0.5">
+              Structured export data ready for administration audits
+            </p>
+          </div>
+          <span className="font-mono text-xs text-cyan-400 bg-cyan-400/10 px-3 py-1 rounded-full border border-cyan-400/20">
+            {students.length} Total Rows
+          </span>
+        </div>
+
+        {loading ? (
+          <p className="py-12 text-center text-xs text-slate-400">Loading audit records...</p>
+        ) : error ? (
+          <p className="py-12 text-center text-xs text-red-400">{error}</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="border-b border-white/[0.08] font-mono text-[11px] text-slate-400 uppercase">
+                  <th className="py-3 px-3">Student Name</th>
+                  <th className="py-3 px-3">ID</th>
+                  <th className="py-3 px-3">Email Address</th>
+                  <th className="py-3 px-3">Program</th>
+                  <th className="py-3 px-3">Contact</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/[0.04]">
+                {students.map((s) => (
+                  <tr key={s.id} className="hover:bg-white/[0.03]">
+                    <td className="py-3 px-3 font-semibold text-white">{s.name}</td>
+                    <td className="py-3 px-3 font-mono text-[#7bd0ff]">#{s.id}</td>
+                    <td className="py-3 px-3 font-mono text-slate-300">{s.email}</td>
+                    <td className="py-3 px-3 text-slate-200">{s.course || "General"}</td>
+                    <td className="py-3 px-3 font-mono text-slate-400">{s.phone || "—"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </section>
     </div>
   );

@@ -1,0 +1,780 @@
+<!DOCTYPE html><html class="dark" lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<meta content="web_dashboard" name="shell-type">
+<title>StudentHub - Glassmorphism OS</title>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;family=JetBrains+Mono:wght@400;500;600&amp;display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Plus Jakarta Sans', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            glass: {
+              card: 'rgba(255, 255, 255, 0.04)',
+              cardHover: 'rgba(255, 255, 255, 0.08)',
+              border: 'rgba(255, 255, 255, 0.12)',
+              pill: 'rgba(255, 255, 255, 0.08)',
+            }
+          },
+          boxShadow: {
+            'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.37), inset 0 1px 1px 0 rgba(255, 255, 255, 0.2)',
+            'glass-lg': '0 20px 50px 0 rgba(0, 0, 0, 0.5), inset 0 1px 2px 0 rgba(255, 255, 255, 0.25)',
+            'glass-inset': 'inset 0 1px 2px rgba(255, 255, 255, 0.25), inset 0 -1px 2px rgba(0, 0, 0, 0.3)',
+            'glow-cyan': '0 0 25px -4px rgba(56, 189, 248, 0.45)',
+            'glow-amber': '0 0 25px -4px rgba(245, 158, 11, 0.45)',
+            'glow-indigo': '0 0 35px -5px rgba(129, 140, 248, 0.4)',
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    @layer base {
+      html, body {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        overscroll-behavior: none;
+      }
+    }
+    ::-webkit-scrollbar {
+      display: none;
+    }
+    .frosted-panel {
+      background: rgba(255, 255, 255, 0.035);
+      backdrop-filter: blur(28px);
+      -webkit-backdrop-filter: blur(28px);
+      border: 1px solid rgba(255, 255, 255, 0.13);
+      box-shadow: 0 16px 40px -10px rgba(0, 0, 0, 0.55), inset 0 1px 1px 0 rgba(255, 255, 255, 0.22);
+    }
+    .frosted-pill {
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.14);
+      box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.25);
+    }
+    .frosted-dock {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(15, 23, 42, 0.65) 100%);
+      backdrop-filter: blur(32px);
+      -webkit-backdrop-filter: blur(32px);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.7), inset 0 1px 2px rgba(255, 255, 255, 0.3);
+    }
+    .glow-sphere-1 {
+      position: fixed;
+      top: -10%;
+      left: 15%;
+      width: 580px;
+      height: 580px;
+      border-radius: 9999px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.25) 0%, rgba(79, 70, 229, 0.08) 45%, transparent 70%);
+      filter: blur(60px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-sphere-2 {
+      position: fixed;
+      top: 35%;
+      right: 5%;
+      width: 620px;
+      height: 620px;
+      border-radius: 9999px;
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.22) 0%, rgba(6, 182, 212, 0.06) 45%, transparent 70%);
+      filter: blur(75px);
+      pointer-events: none;
+      z-index: 0;
+    }
+    .glow-sphere-3 {
+      position: fixed;
+      bottom: -10%;
+      left: 30%;
+      width: 650px;
+      height: 650px;
+      border-radius: 9999px;
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.16) 0%, rgba(217, 70, 239, 0.08) 40%, transparent 70%);
+      filter: blur(85px);
+      pointer-events: none;
+      z-index: 0;
+    }
+  </style>
+</head>
+<body class="bg-[#090D16] font-sans text-slate-100 antialiased selection:bg-cyan-400 selection:text-slate-950 min-h-screen relative overflow-x-hidden">
+<!-- Atmospheric Ambient Backdrop Gradients -->
+<div class="glow-sphere-1"></div>
+<div class="glow-sphere-2"></div>
+<div class="glow-sphere-3"></div>
+<!-- FLOATING FROSTED GLASS SIDEBAR DOCK -->
+<aside class="fixed left-5 top-5 bottom-5 w-[256px] frosted-dock rounded-[32px] z-50 flex flex-col justify-between p-4 transition-all duration-300">
+<div class="flex flex-col">
+<!-- App Brand Pill Header -->
+<div class="flex items-center gap-3 p-2.5 rounded-2xl bg-white/[0.05] border border-white/[0.1] shadow-inner mb-6">
+<div class="relative w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/30 via-cyan-400/20 to-white/10 flex items-center justify-center border border-white/20 p-1.5 shadow-lg backdrop-blur-md">
+<img alt="StudentHub Brand Logo" class="h-full w-auto object-contain drop-shadow" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAOaTIMyonrmgViKZ302YqoqpgkIMlW00dkVUC6aCuPyxYohJuZYxQl2WCmY-oIuX8o1O-kca9buX69q0PZk6-phe4L1UM5xApq5QHADnbK4ysjWnmg2L2qNvXcp9yJbVK0MkirH8_amccKWhv6d16tQhWpycMZzlLc-F1hbPybqOQxi83LKqW3LfM85J6iQ1QHa24kzPr6UCxWYPIjAhH3TonmOwhgWnHzc0i78Hk3">
+<span class="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_10px_#22d3ee]"></span>
+</div>
+<div class="flex flex-col min-w-0">
+<span class="font-bold text-white text-[15px] tracking-tight leading-tight flex items-center gap-1.5">
+            StudentHub
+            <span class="text-[9px] font-mono px-1.5 py-0.5 rounded-full bg-cyan-400/20 text-cyan-300 border border-cyan-400/30">v5</span>
+</span>
+<span class="text-[11px] text-slate-400 font-medium truncate">Glassy OS</span>
+</div>
+</div>
+<!-- Navigation Section: Main -->
+<div class="px-2">
+<div class="px-2 mb-2 text-[10px] font-mono uppercase tracking-widest text-slate-400/80 font-semibold">Workspace</div>
+<nav class="flex flex-col gap-1.5 mb-6">
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl bg-white/90 text-slate-950 font-semibold shadow-[0_4px_20px_rgba(255,255,255,0.25)] hover:scale-[1.02] transition-all group" href="#">
+<div class="w-7 h-7 rounded-xl bg-slate-900/10 flex items-center justify-center text-slate-950">
+<span class="material-symbols-outlined text-[19px]">dashboard</span>
+</div>
+<span class="text-[13px] tracking-tight">Overview</span>
+<span class="ml-auto w-1.5 h-1.5 rounded-full bg-amber-500 shadow-[0_0_8px_#f59e0b]"></span>
+</a>
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-300 hover:text-white hover:bg-white/[0.08] border border-transparent hover:border-white/10 transition-all group" href="#">
+<div class="w-7 h-7 rounded-xl bg-white/[0.04] group-hover:bg-white/10 flex items-center justify-center text-slate-400 group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[19px]">school</span>
+</div>
+<span class="text-[13px] font-medium">Students</span>
+</a>
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-300 hover:text-white hover:bg-white/[0.08] border border-transparent hover:border-white/10 transition-all group" href="#">
+<div class="w-7 h-7 rounded-xl bg-white/[0.04] group-hover:bg-white/10 flex items-center justify-center text-slate-400 group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[19px]">menu_book</span>
+</div>
+<span class="text-[13px] font-medium">Courses</span>
+</a>
+</nav>
+<div class="px-2 mb-2 text-[10px] font-mono uppercase tracking-widest text-slate-400/80 font-semibold">Governance</div>
+<nav class="flex flex-col gap-1.5">
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-300 hover:text-white hover:bg-white/[0.08] border border-transparent hover:border-white/10 transition-all group" href="#">
+<div class="w-7 h-7 rounded-xl bg-white/[0.04] group-hover:bg-white/10 flex items-center justify-center text-slate-400 group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[19px]">bar_chart</span>
+</div>
+<span class="text-[13px] font-medium">Reports</span>
+</a>
+<a class="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl text-slate-300 hover:text-white hover:bg-white/[0.08] border border-transparent hover:border-white/10 transition-all group" href="#">
+<div class="w-7 h-7 rounded-xl bg-white/[0.04] group-hover:bg-white/10 flex items-center justify-center text-slate-400 group-hover:text-white transition-colors">
+<span class="material-symbols-outlined text-[19px]">settings</span>
+</div>
+<span class="text-[13px] font-medium">Settings</span>
+</a>
+</nav>
+</div>
+</div>
+<!-- Bottom Glass Widget -->
+<div class="flex flex-col gap-3">
+<!-- Registry Help Capsule -->
+<div class="p-3.5 rounded-2xl bg-white/[0.04] border border-white/[0.1] relative overflow-hidden backdrop-blur-md">
+<div class="absolute -right-4 -top-4 w-16 h-16 rounded-full bg-cyan-500/10 blur-xl pointer-events-none"></div>
+<div class="flex items-center gap-2 text-cyan-300 mb-1">
+<span class="material-symbols-outlined text-[18px]">help_outline</span>
+<span class="text-[12px] font-bold text-white">Help &amp; Support</span>
+</div>
+<p class="text-[11px] text-slate-400 leading-relaxed">Direct hotline to institutional registry guides.</p>
+<a class="text-[11px] font-semibold text-cyan-300 hover:text-cyan-200 inline-flex items-center gap-1 mt-2.5 group" href="#">
+          Registry Desk 
+          <span class="material-symbols-outlined text-[14px] group-hover:translate-x-0.5 transition-transform">arrow_forward</span>
+</a>
+</div>
+<!-- Current Profile Glass Badge -->
+<div class="flex items-center gap-3 p-2 rounded-2xl bg-white/[0.06] border border-white/[0.12] hover:bg-white/[0.1] transition-all">
+<div class="relative flex-shrink-0">
+<img alt="Profile" class="w-9 h-9 rounded-full object-cover ring-2 ring-white/20" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCErYs_06gQCQ7GfsHqZCrrPXGGjgfLs57pdGBNte4qpS0POEkqwxpzsVKpWW5B37HIE9GCDKwcqZrkRejDCWIzLQYa873PsdUKvGyV6LEfc9Dx0iko2IZhtOw2xz3vbWzl7mETG8wpSQ9_ZGqttZrR2Ieq5IT4W2Up5p6ulweD9S1U_ngsUVIAqTq1UjqngaQmb4s38KWyiu3eVoYjIATt5_53xDTsaz0Osd2bpVhy">
+<span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full bg-emerald-400 ring-2 ring-slate-950"></span>
+</div>
+<div class="flex flex-col min-w-0 flex-1">
+<span class="text-[13px] font-bold text-white truncate leading-tight">Glassy OS</span>
+<span class="text-[11px] text-slate-400 truncate">Glassy OS</span>
+</div>
+<span class="material-symbols-outlined text-slate-400 text-[18px] mr-1">unfold_more</span>
+</div>
+</div>
+</aside>
+<!-- MAIN WRAPPER WITH FLOATING TOP CAPSULE BAR -->
+<div class="pl-[296px] pr-6 pt-5 pb-10 min-h-screen relative z-10 flex flex-col gap-6">
+<!-- FLOATING FROSTED GLASS TOPBAR -->
+<header class="frosted-dock rounded-[28px] h-[68px] px-6 flex items-center justify-between shadow-glass sticky top-5 z-40">
+<!-- Search Input Capsule -->
+<div class="flex items-center gap-4 flex-1 max-w-lg">
+<div class="relative flex items-center w-full">
+<span class="material-symbols-outlined absolute left-3.5 text-slate-400 text-[19px] pointer-events-none">search</span>
+<input class="w-full bg-white/[0.05] border border-white/[0.12] pl-10 pr-16 py-2 rounded-full text-[13px] text-white placeholder:text-slate-400 focus:outline-none focus:border-cyan-400/50 focus:bg-white/[0.08] transition-all shadow-inner" placeholder="Search students, courses, IDs..." type="text">
+<kbd class="absolute right-3.5 px-2 py-0.5 rounded-md bg-white/[0.08] border border-white/[0.1] text-[10px] font-mono text-slate-300">⌘K</kbd>
+</div>
+</div>
+<!-- Controls & Pill Toggles (Reference Matching Light/Dark Segmented Pill) -->
+<div class="flex items-center gap-4">
+<!-- Term Pill Status -->
+<div class="flex items-center gap-2 px-3.5 py-1.5 rounded-full frosted-pill">
+<span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_8px_#22d3ee]"></span>
+<span class="text-[12px] font-semibold text-cyan-200">Fall Term 2025</span>
+</div>
+<!-- Glass Segmented Pill Switcher (Light / Dark pill from reference) -->
+<div class="flex items-center p-1 rounded-full bg-black/40 border border-white/10 backdrop-blur-md">
+<button class="flex items-center gap-1.5 px-3 py-1 rounded-full text-slate-400 hover:text-white text-[12px] font-medium transition-all" type="button">
+<span class="material-symbols-outlined text-[16px] text-amber-400">light_mode</span>
+<span class="">Light</span>
+</button>
+<button class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 text-white text-[12px] font-semibold shadow-inner border border-white/20" type="button">
+<span class="material-symbols-outlined text-[16px] text-cyan-300">dark_mode</span>
+<span class="">Dark</span>
+</button>
+</div>
+<!-- Notification Bell Glass Capsule -->
+<button class="relative w-10 h-10 rounded-full frosted-pill flex items-center justify-center text-slate-200 hover:text-white hover:scale-105 transition-all" type="button">
+<span class="material-symbols-outlined text-[20px]">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 rounded-full bg-amber-500 shadow-[0_0_8px_#f59e0b]"></span>
+</button>
+<div class="h-6 w-[1px] bg-white/15"></div>
+<!-- User Quick Pill Badge -->
+<div class="flex items-center gap-2 pl-1 pr-3 py-1 rounded-full frosted-pill cursor-pointer hover:bg-white/[0.1] transition-all">
+<img alt="Dr. Vance Profile" class="w-7 h-7 rounded-full object-cover ring-1 ring-white/30" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCErYs_06gQCQ7GfsHqZCrrPXGGjgfLs57pdGBNte4qpS0POEkqwxpzsVKpWW5B37HIE9GCDKwcqZrkRejDCWIzLQYa873PsdUKvGyV6LEfc9Dx0iko2IZhtOw2xz3vbWzl7mETG8wpSQ9_ZGqttZrR2Ieq5IT4W2Up5p6ulweD9S1U_ngsUVIAqTq1UjqngaQmb4s38KWyiu3eVoYjIATt5_53xDTsaz0Osd2bpVhy">
+<span class="text-[12px] font-semibold text-white">Eleanor</span>
+<span class="material-symbols-outlined text-slate-400 text-[16px]">expand_more</span>
+</div>
+</div>
+</header>
+<!-- MAIN DASHBOARD CONTENT AREA -->
+<main class="flex flex-col gap-6">
+<!-- HERO GREETING & ACTION PILLS -->
+<section class="flex flex-col md:flex-row md:items-center justify-between gap-4 p-6 frosted-panel rounded-3xl relative overflow-hidden">
+<div class="absolute -right-10 -bottom-10 w-64 h-64 rounded-full bg-indigo-500/10 blur-3xl pointer-events-none"></div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2 mb-1">
+<span class="text-[11px] font-mono uppercase tracking-widest text-cyan-400 font-semibold">Registry Ops Terminal</span>
+<span class="w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#22d3ee]"></span>
+<span class="text-[11px] font-mono text-slate-400 bg-white/[0.05] px-2 py-0.5 rounded-full border border-white/[0.08]">SYS-REV-25.10</span>
+</div>
+<h1 class="text-3xl font-extrabold text-white tracking-tight flex items-center gap-2">
+            Good morning, Admin
+            <span class="inline-block animate-pulse text-2xl">✨</span>
+</h1>
+<p class="text-slate-300 text-[13px] mt-1">Here's what's happening across your academic institutions today.</p>
+</div>
+<div class="flex items-center gap-3 flex-wrap">
+<div class="flex items-center gap-2 px-4 py-2.5 rounded-full frosted-pill">
+<span class="material-symbols-outlined text-[18px] text-cyan-300">calendar_today</span>
+<span class="text-[13px] font-semibold text-slate-200">Tuesday, October 24, 2025</span>
+</div>
+<!-- Glass Amber / Cyan Glowing Action Button (Reference Glass Aesthetic) -->
+<button class="group relative inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold text-[13px] shadow-[0_0_25px_rgba(245,158,11,0.45)] hover:shadow-[0_0_35px_rgba(245,158,11,0.7)] hover:scale-105 active:scale-95 transition-all cursor-pointer" id="addStudentTrigger" type="button">
+<span class="material-symbols-outlined text-[18px] font-bold group-hover:rotate-90 transition-transform">add</span>
+<span class="">Add Student</span>
+</button>
+</div>
+</section>
+<!-- 4 FROSTED KPI STAT CARDS -->
+<section class="grid grid-cols-1 sm:grid-cols-2 gap-5 grid-cols-2"><div class="frosted-panel rounded-3xl p-5 flex flex-col justify-between group hover:bg-white/[0.07] hover:border-white/20 transition-all duration-300 relative overflow-hidden">
+<div class="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-indigo-500/15 blur-2xl group-hover:bg-indigo-500/25 transition-all"></div>
+<div>
+<div class="flex items-start justify-between">
+<span class="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-semibold">Total Students</span>
+<div class="w-10 h-10 rounded-2xl bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 flex items-center justify-center shadow-[0_0_15px_rgba(99,102,241,0.25)]">
+<span class="material-symbols-outlined text-[20px]">group</span>
+</div>
+</div>
+<div class="text-3xl font-extrabold text-white tracking-tight mt-2">128</div>
+</div>
+<div class="flex items-center justify-between mt-5 pt-3 border-t border-white/[0.08]">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 text-[11px] font-semibold">
+<span class="material-symbols-outlined text-[14px]">verified</span>
+<span class="">Live Registry</span>
+</div>
+<span class="text-[11px] text-slate-400 font-mono">Enrolled</span>
+</div>
+</div>
+<div class="frosted-panel rounded-3xl p-5 flex flex-col justify-between group hover:bg-white/[0.07] hover:border-white/20 transition-all duration-300 relative overflow-hidden">
+<div class="absolute -right-6 -bottom-6 w-28 h-28 rounded-full bg-amber-500/15 blur-2xl group-hover:bg-amber-500/25 transition-all"></div>
+<div>
+<div class="flex items-start justify-between">
+<span class="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-semibold">Total Courses</span>
+<div class="w-10 h-10 rounded-2xl bg-amber-500/20 border border-amber-400/30 text-amber-300 flex items-center justify-center shadow-[0_0_15px_rgba(245,158,11,0.25)]">
+<span class="material-symbols-outlined text-[20px]">auto_stories</span>
+</div>
+</div>
+<div class="text-3xl font-extrabold text-white tracking-tight mt-2">6</div>
+</div>
+<div class="flex items-center justify-between mt-5 pt-3 border-t border-white/[0.08]">
+<div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/[0.06] border border-white/[0.12] text-slate-300 text-[11px] font-medium">
+<span class="material-symbols-outlined text-[14px] text-amber-400">domain</span>
+<span class="">6 Offerings</span>
+</div>
+<span class="text-[11px] text-slate-400 font-mono">Active Programs</span>
+</div>
+</div></section>
+<!-- ANALYTICS ROW: LINE CHART & DONUT CHART -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+<!-- Enrollment Analytics Wave Chart -->
+<div class="lg:col-span-8 frosted-panel rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden">
+<div class="absolute -left-12 -top-12 w-64 h-64 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none"></div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 relative z-10">
+<div>
+<div class="flex items-center gap-2">
+<h2 class="text-lg font-bold text-white tracking-tight">Student Enrollment Analytics</h2>
+<span class="px-2.5 py-0.5 rounded-full bg-cyan-400/15 border border-cyan-400/30 text-cyan-300 text-[11px] font-semibold">Annual Trend</span>
+</div>
+<p class="text-slate-400 text-[12px] mt-0.5">Enrollment overview throughout the academic year</p>
+</div>
+<!-- Segmented Pill Legend -->
+<div class="flex items-center gap-2 p-1 rounded-full bg-black/30 border border-white/10">
+<div class="flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/[0.08] text-white text-[11px] font-medium">
+<span class="w-2.5 h-1.5 rounded-full bg-indigo-400 shadow-[0_0_8px_#818cf8]"></span>
+<span class="">2025 Current</span>
+</div>
+<div class="flex items-center gap-1.5 px-3 py-1 text-slate-400 text-[11px]">
+<span class="w-2.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]"></span>
+<span class="">2024 Prior</span>
+</div>
+</div>
+</div>
+<!-- SVG Glass Waveform Graph -->
+<div class="relative w-full h-72 select-none" id="chartWrapper">
+<svg class="w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 700 240">
+<defs>
+<linearGradient id="glassCurrentGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#818cf8" stop-opacity="0.45"></stop>
+<stop offset="60%" stop-color="#38bdf8" stop-opacity="0.15"></stop>
+<stop offset="100%" stop-color="#38bdf8" stop-opacity="0.0"></stop>
+</linearGradient>
+<linearGradient id="glassPriorGradient" x1="0" x2="0" y1="0" y2="1">
+<stop offset="0%" stop-color="#22d3ee" stop-opacity="0.25"></stop>
+<stop offset="100%" stop-color="#22d3ee" stop-opacity="0.0"></stop>
+</linearGradient>
+<filter height="140%" id="neonGlowCurrent" width="140%" x="-20%" y="-20%">
+<feGaussianBlur result="blur" stdDeviation="3"></feGaussianBlur>
+<feComposite in="SourceGraphic" in2="blur" operator="over"></feComposite>
+</filter>
+</defs>
+<!-- Subtle Glass Gridlines -->
+<g stroke="rgba(255, 255, 255, 0.08)" stroke-dasharray="4 6" stroke-width="1">
+<line x1="35" x2="680" y1="30" y2="30"></line>
+<line x1="35" x2="680" y1="80" y2="80"></line>
+<line x1="35" x2="680" y1="130" y2="130"></line>
+<line x1="35" x2="680" y1="180" y2="180"></line>
+</g>
+<!-- Y-Axis Labels -->
+<g class="font-mono text-[10px] fill-slate-400">
+<text x="5" y="34">1,400</text>
+<text x="5" y="84">1,100</text>
+<text x="5" y="134">800</text>
+<text x="5" y="184">500</text>
+</g>
+<!-- Area Curves -->
+<path d="M 40,165 Q 95,150 150,140 T 260,115 T 370,95 T 480,80 T 590,55 T 670,42 L 670,200 L 40,200 Z" fill="url(#glassCurrentGradient)"></path>
+<path d="M 40,185 Q 95,170 150,162 T 260,145 T 370,130 T 480,115 T 590,95 T 670,85 L 670,200 L 40,200 Z" fill="url(#glassPriorGradient)"></path>
+<!-- Curve Strokes with Neon Diffusion -->
+<path d="M 40,165 Q 95,150 150,140 T 260,115 T 370,95 T 480,80 T 590,55 T 670,42" fill="none" filter="url(#neonGlowCurrent)" stroke="#818cf8" stroke-linecap="round" stroke-width="3"></path>
+<path d="M 40,185 Q 95,170 150,162 T 260,145 T 370,130 T 480,115 T 590,95 T 670,85" fill="none" opacity="0.8" stroke="#22d3ee" stroke-dasharray="5 4" stroke-linecap="round" stroke-width="2"></path>
+<!-- Luminous Anchor Nodes -->
+<g>
+<circle class="fill-[#090D16] stroke-indigo-400" cx="150" cy="140" r="4" stroke-width="2.5"></circle>
+<circle class="fill-[#090D16] stroke-indigo-400" cx="260" cy="115" r="4" stroke-width="2.5"></circle>
+<circle class="fill-[#090D16] stroke-indigo-400" cx="370" cy="95" r="4" stroke-width="2.5"></circle>
+<!-- Active September Pulsing Pin -->
+<circle class="fill-indigo-300 stroke-white" cx="480" cy="80" r="6" stroke-width="2.5"></circle>
+<circle class="fill-cyan-400 animate-ping opacity-60" cx="480" cy="80" r="10"></circle>
+<circle class="fill-[#090D16] stroke-indigo-400" cx="590" cy="55" r="4" stroke-width="2.5"></circle>
+<circle class="fill-[#090D16] stroke-indigo-400" cx="670" cy="42" r="4" stroke-width="2.5"></circle>
+</g>
+<!-- X-Axis Months -->
+<g class="font-mono text-[10px] fill-slate-400">
+<text x="35" y="222">Jan</text>
+<text x="90" y="222">Feb</text>
+<text x="145" y="222">Mar</text>
+<text x="200" y="222">Apr</text>
+<text x="255" y="222">May</text>
+<text x="310" y="222">Jun</text>
+<text x="365" y="222">Jul</text>
+<text x="420" y="222">Aug</text>
+<text class="fill-cyan-300 font-bold" x="475" y="222">Sep</text>
+<text x="530" y="222">Oct</text>
+<text x="585" y="222">Nov</text>
+<text x="645" y="222">Dec</text>
+</g>
+</svg>
+<!-- Luminous Frosted Tooltip Capsule (September 2025) -->
+<div class="absolute left-[64%] top-6 transform -translate-x-1/2 p-3.5 rounded-2xl bg-white/[0.08] backdrop-blur-2xl border border-white/20 shadow-glass flex flex-col gap-1.5 min-w-[150px] pointer-events-none">
+<div class="flex items-center justify-between">
+<span class="text-[10px] font-mono uppercase text-slate-400">September 2025</span>
+<span class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_6px_#22d3ee]"></span>
+</div>
+<div class="flex items-center justify-between text-[12px]">
+<span class="text-indigo-300 font-medium">Current:</span>
+<span class="font-mono text-white font-bold">1,180</span>
+</div>
+<div class="flex items-center justify-between text-[12px]">
+<span class="text-cyan-300 font-medium">Prior Yr:</span>
+<span class="font-mono text-slate-300">1,024</span>
+</div>
+<div class="pt-1.5 mt-0.5 border-t border-white/10 flex items-center justify-between">
+<span class="text-[10px] font-bold text-emerald-300 bg-emerald-500/15 px-2 py-0.5 rounded-full border border-emerald-500/30">+15.2% YoY</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Students By Course Radial Donut Card -->
+<div class="lg:col-span-4 frosted-panel rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden">
+<div class="absolute -right-8 -top-8 w-48 h-48 rounded-full bg-cyan-500/10 blur-3xl pointer-events-none"></div>
+<div>
+<div class="flex items-center justify-between mb-1">
+<h2 class="text-lg font-bold text-white tracking-tight">Students by Course</h2>
+<button class="w-8 h-8 rounded-full frosted-pill flex items-center justify-center text-slate-400 hover:text-white" type="button">
+<span class="material-symbols-outlined text-[18px]">more_vert</span>
+</button>
+</div>
+<p class="text-slate-400 text-[12px]">Distribution across academic programs</p>
+</div>
+<!-- Radiant Glass Donut Chart -->
+<div class="relative flex items-center justify-center my-4">
+<svg class="w-48 h-48 -rotate-90 transform drop-shadow-[0_0_20px_rgba(56,189,248,0.25)]" viewBox="0 0 160 160">
+<circle cx="80" cy="80" fill="none" r="62" stroke="rgba(255,255,255,0.06)" stroke-width="16"></circle>
+<!-- Computer Science (Indigo) -->
+<circle cx="80" cy="80" fill="none" r="62" stroke="#818cf8" stroke-dasharray="118.8 389.5" stroke-dashoffset="0" stroke-linecap="round" stroke-width="16"></circle>
+<!-- Business Admin (Cyan) -->
+<circle cx="80" cy="80" fill="none" r="62" stroke="#38bdf8" stroke-dasharray="96.9 389.5" stroke-dashoffset="-124" stroke-linecap="round" stroke-width="16"></circle>
+<!-- Mech Eng (Amber) -->
+<circle cx="80" cy="80" fill="none" r="62" stroke="#f59e0b" stroke-dasharray="81.3 389.5" stroke-dashoffset="-225" stroke-linecap="round" stroke-width="16"></circle>
+<!-- Bio-Tech (Emerald) -->
+<circle cx="80" cy="80" fill="none" r="62" stroke="#34d399" stroke-dasharray="57.8 389.5" stroke-dashoffset="-310" stroke-linecap="round" stroke-width="16"></circle>
+<!-- Others -->
+<circle cx="80" cy="80" fill="none" r="62" stroke="#94a3b8" stroke-dasharray="25.3 389.5" stroke-dashoffset="-372" stroke-linecap="round" stroke-width="16"></circle>
+</svg>
+<div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+<span class="text-2xl font-black text-white tracking-tight">128</span>
+<span class="text-[10px] font-mono uppercase text-slate-400 tracking-wider">Total Active</span>
+</div>
+</div>
+<!-- Glass Breakdown Legend List -->
+<div class="flex flex-col gap-1.5"><div class="flex items-center justify-between py-1 px-2 rounded-xl hover:bg-white/[0.06] transition-colors">
+<div class="flex items-center gap-2.5">
+<span class="w-2.5 h-2.5 rounded-full bg-indigo-400 shadow-[0_0_8px_#818cf8]"></span>
+<span class="text-[12px] font-medium text-slate-200">Computer Science</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-mono text-[12px] text-white font-semibold">34</span>
+<span class="text-[11px] text-slate-400 font-mono">26.6%</span>
+</div>
+</div>
+<div class="flex items-center justify-between py-1 px-2 rounded-xl hover:bg-white/[0.06] transition-colors">
+<div class="flex items-center gap-2.5">
+<span class="w-2.5 h-2.5 rounded-full bg-cyan-400 shadow-[0_0_8px_#38bdf8]"></span>
+<span class="text-[12px] font-medium text-slate-200">Software Engineering</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-mono text-[12px] text-white font-semibold">28</span>
+<span class="text-[11px] text-slate-400 font-mono">21.9%</span>
+</div>
+</div>
+<div class="flex items-center justify-between py-1 px-2 rounded-xl hover:bg-white/[0.06] transition-colors">
+<div class="flex items-center gap-2.5">
+<span class="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_8px_#f59e0b]"></span>
+<span class="text-[12px] font-medium text-slate-200">Data Science</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-mono text-[12px] text-white font-semibold">24</span>
+<span class="text-[11px] text-slate-400 font-mono">18.8%</span>
+</div>
+</div>
+<div class="flex items-center justify-between py-1 px-2 rounded-xl hover:bg-white/[0.06] transition-colors">
+<div class="flex items-center gap-2.5">
+<span class="w-2.5 h-2.5 rounded-full bg-emerald-400 shadow-[0_0_8px_#34d399]"></span>
+<span class="text-[12px] font-medium text-slate-200">Cybersecurity</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-mono text-[12px] text-white font-semibold">18</span>
+<span class="text-[11px] text-slate-400 font-mono">14.1%</span>
+</div>
+</div>
+<div class="flex items-center justify-between py-1 px-2 rounded-xl hover:bg-white/[0.06] transition-colors">
+<div class="flex items-center gap-2.5">
+<span class="w-2.5 h-2.5 rounded-full bg-fuchsia-400 shadow-[0_0_8px_#d946ef]"></span>
+<span class="text-[12px] font-medium text-slate-200">Artificial Intelligence</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-mono text-[12px] text-white font-semibold">14</span>
+<span class="text-[11px] text-slate-400 font-mono">10.9%</span>
+</div>
+</div>
+<div class="flex items-center justify-between py-1 px-2 rounded-xl hover:bg-white/[0.06] transition-colors">
+<div class="flex items-center gap-2.5">
+<span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+<span class="text-[12px] font-medium text-slate-200">Information Systems</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="font-mono text-[12px] text-white font-semibold">10</span>
+<span class="text-[11px] text-slate-400 font-mono">7.8%</span>
+</div>
+</div></div>
+</div>
+</section>
+<!-- BOTTOM ROW: RECENT STUDENTS TABLE & ACTIVITY FEED -->
+<section class="grid grid-cols-1 gap-5"><div class="w-full frosted-panel rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden">
+<div>
+<div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+<div>
+<h2 class="text-lg font-bold text-white tracking-tight">Recent Students</h2>
+<p class="text-slate-400 text-[12px]">Newly matriculated records and registry enrollments</p>
+</div>
+<div class="flex items-center gap-2">
+<button class="px-3.5 py-1.5 rounded-full frosted-pill text-[12px] font-medium text-slate-300 hover:text-white hover:bg-white/[0.1] transition-all" type="button">
+<span class="inline-flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">tune</span>
+Filter
+</span>
+</button>
+<button class="px-3.5 py-1.5 rounded-full frosted-pill text-[12px] font-medium text-slate-300 hover:text-white hover:bg-white/[0.1] transition-all" type="button">
+<span class="inline-flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px]">file_download</span>
+Export CSV
+</span>
+</button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-separate border-spacing-y-2">
+<thead>
+<tr class="text-[11px] font-mono uppercase tracking-wider text-slate-400">
+<th class="py-2 px-3 font-semibold">Student</th>
+<th class="py-2 px-3 font-semibold">Student ID</th>
+<th class="py-2 px-3 font-semibold">Course</th>
+<th class="py-2 px-3 font-semibold">Status</th>
+<th class="py-2 px-3 font-semibold text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y-0">
+<tr class="bg-white/[0.03] hover:bg-white/[0.07] transition-all group rounded-2xl">
+<td class="py-3 px-3 rounded-l-2xl">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500/30 to-purple-500/20 border border-indigo-400/30 text-indigo-300 flex items-center justify-center font-bold text-[13px] shadow-sm">MC</div>
+<div class="flex flex-col">
+<span class="font-semibold text-white text-[13px] group-hover:text-cyan-300 transition-colors">Marcus Chen</span>
+<span class="text-[11px] text-slate-400">m.chen@campus.edu</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3 font-mono text-[12px] text-slate-300">STU-8921</td>
+<td class="py-3 px-3 text-[13px] text-slate-200">Computer Science</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/15 border border-emerald-500/30 text-emerald-300">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]"></span>
+Active
+</span>
+</td>
+<td class="py-3 px-3 text-right rounded-r-2xl">
+<div class="inline-flex items-center gap-1">
+<button class="w-7 h-7 rounded-lg frosted-pill flex items-center justify-center text-slate-400 hover:text-white" title="View details" type="button">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+</button>
+<button class="w-7 h-7 rounded-lg frosted-pill flex items-center justify-center text-slate-400 hover:text-white" title="Edit record" type="button">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+</button>
+<button class="w-7 h-7 rounded-lg frosted-pill flex items-center justify-center text-slate-400 hover:text-white" type="button">
+<span class="material-symbols-outlined text-[16px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="bg-white/[0.03] hover:bg-white/[0.07] transition-all group rounded-2xl">
+<td class="py-3 px-3 rounded-l-2xl">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500/30 to-blue-500/20 border border-cyan-400/30 text-cyan-300 flex items-center justify-center font-bold text-[13px] shadow-sm">SL</div>
+<div class="flex flex-col">
+<span class="font-semibold text-white text-[13px] group-hover:text-cyan-300 transition-colors">Sophia Laurent</span>
+<span class="text-[11px] text-slate-400">s.laurent@campus.edu</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3 font-mono text-[12px] text-slate-300">STU-8922</td>
+<td class="py-3 px-3 text-[13px] text-slate-200">Software Engineering</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/15 border border-emerald-500/30 text-emerald-300">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]"></span>
+Active
+</span>
+</td>
+<td class="py-3 px-3 text-right rounded-r-2xl">
+<div class="inline-flex items-center gap-1">
+<button class="w-7 h-7 rounded-lg frosted-pill flex items-center justify-center text-slate-400 hover:text-white" title="View details" type="button">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+</button>
+<button class="w-7 h-7 rounded-lg frosted-pill flex items-center justify-center text-slate-400 hover:text-white" title="Edit record" type="button">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+</button>
+<button class="w-7 h-7 rounded-lg frosted-pill flex items-center justify-center text-slate-400 hover:text-white" type="button">
+<span class="material-symbols-outlined text-[16px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="bg-white/[0.03] hover:bg-white/[0.07] transition-all group rounded-2xl">
+<td class="py-3 px-3 rounded-l-2xl">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-br from-amber-500/30 to-orange-500/20 border border-amber-400/30 text-amber-300 flex items-center justify-center font-bold text-[13px] shadow-sm">AR</div>
+<div class="flex flex-col">
+<span class="font-semibold text-white text-[13px] group-hover:text-cyan-300 transition-colors">Amara Rao</span>
+<span class="text-[11px] text-slate-400">a.rao@campus.edu</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3 font-mono text-[12px] text-slate-300">STU-8923</td>
+<td class="py-3 px-3 text-[13px] text-slate-200">Data Science</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/15 border border-emerald-500/30 text-emerald-300">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]"></span>
+Active
+</span>
+</td>
+<td class="py-3 px-3 text-right rounded-r-2xl">
+<div class="inline-flex items-center gap-1">
+<button class="w-7 h-7 rounded-lg frosted-pill flex items-center justify-center text-slate-400 hover:text-white" title="View details" type="button">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+</button>
+<button class="w-7 h-7 rounded-lg frosted-pill flex items-center justify-center text-slate-400 hover:text-white" title="Edit record" type="button">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+</button>
+<button class="w-7 h-7 rounded-lg frosted-pill flex items-center justify-center text-slate-400 hover:text-white" type="button">
+<span class="material-symbols-outlined text-[16px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+<tr class="bg-white/[0.03] hover:bg-white/[0.07] transition-all group rounded-2xl">
+<td class="py-3 px-3 rounded-l-2xl">
+<div class="flex items-center gap-3">
+<div class="w-9 h-9 rounded-xl bg-gradient-to-br from-fuchsia-500/30 to-pink-500/20 border border-fuchsia-400/30 text-fuchsia-300 flex items-center justify-center font-bold text-[13px] shadow-sm">DH</div>
+<div class="flex flex-col">
+<span class="font-semibold text-white text-[13px] group-hover:text-cyan-300 transition-colors">David Hayes</span>
+<span class="text-[11px] text-slate-400">d.hayes@campus.edu</span>
+</div>
+</div>
+</td>
+<td class="py-3 px-3 font-mono text-[12px] text-slate-300">STU-8924</td>
+<td class="py-3 px-3 text-[13px] text-slate-200">Cybersecurity</td>
+<td class="py-3 px-3">
+<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/15 border border-emerald-500/30 text-emerald-300">
+<span class="w-1.5 h-1.5 rounded-full bg-emerald-400 shadow-[0_0_6px_#34d399]"></span>
+Active
+</span>
+</td>
+<td class="py-3 px-3 text-right rounded-r-2xl">
+<div class="inline-flex items-center gap-1">
+<button class="w-7 h-7 rounded-lg frosted-pill flex items-center justify-center text-slate-400 hover:text-white" title="View details" type="button">
+<span class="material-symbols-outlined text-[16px]">visibility</span>
+</button>
+<button class="w-7 h-7 rounded-lg frosted-pill flex items-center justify-center text-slate-400 hover:text-white" title="Edit record" type="button">
+<span class="material-symbols-outlined text-[16px]">edit</span>
+</button>
+<button class="w-7 h-7 rounded-lg frosted-pill flex items-center justify-center text-slate-400 hover:text-white" type="button">
+<span class="material-symbols-outlined text-[16px]">more_vert</span>
+</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="pt-4 mt-3 border-t border-white/[0.08] flex items-center justify-between">
+<span class="text-[12px] font-mono text-slate-400">Showing 4 of 128 enrolled records</span>
+<a class="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full frosted-pill text-[12px] font-semibold text-cyan-300 hover:text-white hover:bg-white/[0.1] transition-all" href="#">
+<span class="">View all students</span>
+<span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+</a>
+</div>
+</div></section>
+</main>
+</div>
+<!-- FROSTED QUICK REGISTER MODAL -->
+<div class="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xl hidden transition-opacity opacity-0" id="quickModal">
+<div class="w-full max-w-lg rounded-[32px] frosted-dock p-7 shadow-glass-lg flex flex-col gap-5 transform scale-95 transition-all relative border border-white/25">
+<div class="flex items-center justify-between">
+<div>
+<h3 class="text-xl font-bold text-white tracking-tight">Quick Register Student</h3>
+<p class="text-[12px] text-slate-400">Create new academic profile in registrar</p>
+</div>
+<button class="w-8 h-8 rounded-full frosted-pill flex items-center justify-center text-slate-400 hover:text-white transition-colors" id="closeModal" type="button">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+<form class="flex flex-col gap-4" onsubmit="event.preventDefault(); document.getElementById('closeModal').click();">
+<div class="flex flex-col gap-1.5">
+<label class="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-medium">Full Legal Name</label>
+<input class="w-full px-4 py-2.5 rounded-2xl bg-white/[0.06] border border-white/[0.12] text-[13px] text-white placeholder:text-slate-500 focus:outline-none focus:border-cyan-400/50 focus:bg-white/[0.1] transition-all" placeholder="e.g. Katherine Thorne" type="text">
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="flex flex-col gap-1.5">
+<label class="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-medium">Program</label>
+<select class="w-full px-4 py-2.5 rounded-2xl bg-[#0e1726] border border-white/[0.15] text-[13px] text-white focus:outline-none focus:border-cyan-400/50"><option>Computer Science</option>
+<option>Software Engineering</option>
+<option>Data Science</option>
+<option>Cybersecurity</option>
+<option>Artificial Intelligence</option>
+<option>Information Systems</option></select>
+</div>
+<div class="flex flex-col gap-1.5">
+<label class="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-medium">Cohort</label>
+<input class="w-full px-4 py-2.5 rounded-2xl bg-white/[0.06] border border-white/[0.12] text-[13px] text-white focus:outline-none focus:border-cyan-400/50" type="text" value="AY 2025/2026">
+</div>
+</div>
+<div class="flex justify-end gap-3 pt-3 border-t border-white/10">
+<button class="px-5 py-2 rounded-full frosted-pill text-[13px] font-medium text-slate-300 hover:text-white" id="cancelModalBtn" type="button">Cancel</button>
+<button class="px-6 py-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-bold text-[13px] shadow-[0_0_20px_rgba(245,158,11,0.4)] hover:shadow-[0_0_30px_rgba(245,158,11,0.6)] transition-all" type="submit">Submit Record</button>
+</div>
+</form>
+</div>
+</div>
+<!-- Interactive Modal Script -->
+<script>
+    (function() {
+      const modal = document.getElementById('quickModal');
+      const openBtn = document.getElementById('addStudentTrigger');
+      const closeBtn = document.getElementById('closeModal');
+      const cancelBtn = document.getElementById('cancelModalBtn');
+
+      function showModal() {
+        if (!modal) return;
+        modal.classList.remove('hidden');
+        requestAnimationFrame(() => {
+          modal.classList.remove('opacity-0');
+          if (modal.children[0]) {
+            modal.children[0].classList.remove('scale-95');
+            modal.children[0].classList.add('scale-100');
+          }
+        });
+      }
+
+      function hideModal() {
+        if (!modal) return;
+        modal.classList.add('opacity-0');
+        if (modal.children[0]) {
+          modal.children[0].classList.remove('scale-100');
+          modal.children[0].classList.add('scale-95');
+        }
+        setTimeout(() => {
+          modal.classList.add('hidden');
+        }, 180);
+      }
+
+      if (openBtn) openBtn.addEventListener('click', showModal);
+      if (closeBtn) closeBtn.addEventListener('click', hideModal);
+      if (cancelBtn) cancelBtn.addEventListener('click', hideModal);
+
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
+          hideModal();
+        }
+      });
+    })();
+  </script>
+
+
+</body></html>
