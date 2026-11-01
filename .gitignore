@@ -1,0 +1,30 @@
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Node.js / React
+node_modules/
+dist/
+.vite/
+
+# Java / Maven / Spring Boot
+target/
+*.class
+*.jar
+*.war
+
+# IDE settings
+.vscode/
+.idea/
+*.iml
+
+# macOS files
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local configuration
+application-local.properties
