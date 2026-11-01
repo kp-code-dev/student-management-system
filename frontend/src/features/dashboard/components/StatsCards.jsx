@@ -28,12 +28,20 @@ function StatsCards() {
       .filter(Boolean)
   ).size;
 
+  const studentsWithCourse = students.filter(
+    (s) => s.course && s.course.trim().length > 0
+  ).length;
+
+  const enrollmentRatio = totalStudents > 0
+    ? Math.round((studentsWithCourse / totalStudents) * 100)
+    : 0;
+
   const stats = [
     {
       title: "Total Students",
       value: loading ? "..." : totalStudents.toString(),
       icon: "group",
-      badgeText: "+12% this term",
+      badgeText: `${totalStudents} registered students`,
       glowColor: "bg-indigo-500/15 group-hover:bg-indigo-500/25",
       iconBoxBg: "bg-indigo-500/20 border-indigo-400/30 text-indigo-300 shadow-[0_0_15px_rgba(99,102,241,0.25)]",
       trendColor: "text-emerald-400",
@@ -41,9 +49,9 @@ function StatsCards() {
     },
     {
       title: "Active Enrollments",
-      value: loading ? "..." : (totalStudents > 0 ? (totalStudents - 1 > 0 ? totalStudents - 1 : totalStudents) : 0).toString(),
+      value: loading ? "..." : studentsWithCourse.toString(),
       icon: "how_to_reg",
-      badgeText: "98.2% attendance",
+      badgeText: `${enrollmentRatio}% enrolled in courses`,
       glowColor: "bg-cyan-500/15 group-hover:bg-cyan-500/25",
       iconBoxBg: "bg-cyan-500/20 border-cyan-400/30 text-cyan-300 shadow-[0_0_15px_rgba(34,211,238,0.25)]",
       trendColor: "text-cyan-400",
@@ -53,26 +61,16 @@ function StatsCards() {
       title: "Courses Offered",
       value: loading ? "..." : totalCourses.toString(),
       icon: "menu_book",
-      badgeText: "Across all terms",
+      badgeText: `${totalCourses} distinct programs`,
       glowColor: "bg-amber-500/15 group-hover:bg-amber-500/25",
       iconBoxBg: "bg-amber-500/20 border-amber-400/30 text-amber-300 shadow-[0_0_15px_rgba(245,158,11,0.25)]",
       trendColor: "text-amber-400",
       trendIcon: "category",
     },
-    {
-      title: "Matriculation Rate",
-      value: "94.6%",
-      icon: "workspace_premium",
-      badgeText: "Top quartile",
-      glowColor: "bg-purple-500/15 group-hover:bg-purple-500/25",
-      iconBoxBg: "bg-purple-500/20 border-purple-400/30 text-purple-300 shadow-[0_0_15px_rgba(168,85,247,0.25)]",
-      trendColor: "text-purple-400",
-      trendIcon: "verified",
-    },
   ];
 
   return (
-    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-3">
       {stats.map((stat) => (
         <div
           key={stat.title}

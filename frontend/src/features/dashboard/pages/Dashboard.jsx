@@ -8,6 +8,18 @@ import RecentStudents from "@/features/dashboard/components/RecentStudents";
 function Dashboard() {
   const navigate = useNavigate();
 
+  const user = (() => {
+    try {
+      return (
+        JSON.parse(localStorage.getItem("user")) || {
+          name: "Admin User",
+        }
+      );
+    } catch {
+      return { name: "Admin User" };
+    }
+  })();
+
   const today = new Date().toLocaleDateString("en-US", {
     weekday: "long",
     month: "long",
@@ -20,7 +32,7 @@ function Dashboard() {
       <PageHeader
         title={
           <>
-            Good morning, Admin{" "}
+            Welcome back, {user.name}{" "}
             <span className="inline-block animate-pulse text-2xl">✨</span>
           </>
         }

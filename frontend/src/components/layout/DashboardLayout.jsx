@@ -8,7 +8,7 @@ function DashboardLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
-    <div className="relative min-h-screen bg-[#0a0e17] text-[#dfe2ef]">
+    <div className="relative min-h-screen bg-[#0a0e17] text-[#dfe2ef] transition-colors duration-300">
       {/* Global Ambient Glow Spheres (Aether Glass aesthetic) */}
       <div className="ambient-glow-1" />
       <div className="ambient-glow-2" />

@@ -69,7 +69,7 @@ function Reports() {
       />
 
       {/* KPI Highlights */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
         <div className="frosted-panel rounded-3xl p-5 relative overflow-hidden">
           <div className="flex items-center justify-between">
             <span className="font-mono text-[11px] uppercase tracking-wider text-slate-400">Total Enrollees</span>
@@ -91,18 +91,6 @@ function Reports() {
           <div className="mt-3 flex items-center gap-1.5 text-xs text-cyan-400 font-mono">
             <span className="material-symbols-outlined text-sm">school</span>
             <span>All accredited branches</span>
-          </div>
-        </div>
-
-        <div className="frosted-panel rounded-3xl p-5 relative overflow-hidden">
-          <div className="flex items-center justify-between">
-            <span className="font-mono text-[11px] uppercase tracking-wider text-slate-400">Compliance Rate</span>
-            <span className="material-symbols-outlined text-[20px] text-amber-300">verified_user</span>
-          </div>
-          <div className="mt-2 text-3xl font-extrabold text-white">100%</div>
-          <div className="mt-3 flex items-center gap-1.5 text-xs text-amber-400 font-mono">
-            <span className="material-symbols-outlined text-sm">check_circle</span>
-            <span>All records valid & verified</span>
           </div>
         </div>
       </div>

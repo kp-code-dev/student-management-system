@@ -27,6 +27,10 @@ function Students() {
   const [saving, setSaving] = useState(false);
   const [formError, setFormError] = useState("");
 
+  // Delete modal state
+  const [studentToDelete, setStudentToDelete] = useState(null);
+  const [deleting, setDeleting] = useState(false);
+
   const fetchStudents = async () => {
     try {
       setError("");
@@ -70,18 +74,23 @@ function Students() {
     setShowModal(true);
   };
 
-  const handleDelete = async (student) => {
-    const confirmed = window.confirm(
-      `Are you sure you want to delete ${student.name}?`
-    );
-    if (!confirmed) return;
+  const handleOpenDelete = (student) => {
+    setStudentToDelete(student);
+  };
+
+  const handleConfirmDelete = async () => {
+    if (!studentToDelete) return;
 
     try {
-      await deleteStudent(student.id);
-      toast.success(`Student "${student.name}" deleted successfully!`);
+      setDeleting(true);
+      await deleteStudent(studentToDelete.id);
+      toast.success(`Student "${studentToDelete.name}" deleted successfully!`);
+      setStudentToDelete(null);
       await fetchStudents();
     } catch (err) {
       toast.error(err.message || "Unable to delete student.");
+    } finally {
+      setDeleting(false);
     }
   };
 
@@ -349,7 +358,7 @@ function Students() {
                             </span>
                           </button>
                           <button
-                            onClick={() => handleDelete(student)}
+                            onClick={() => handleOpenDelete(student)}
                             title="Delete Student"
                             className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-slate-300 transition hover:bg-red-500/20 hover:text-red-400"
                           >
@@ -490,6 +499,80 @@ function Students() {
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+      {/* 6. ConfirmDeleteDialog (Exact design match from Student-Management-System/models) */}
+      {studentToDelete && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#0a0e17]/80 p-4 backdrop-blur-md overflow-y-auto">
+          <div className="relative w-full max-w-md rounded-2xl border border-red-500/40 bg-[#1c1f29]/95 p-6 shadow-2xl shadow-red-950/40 backdrop-blur-2xl flex flex-col justify-between gap-5 overflow-hidden">
+            {/* Ambient Red Glow */}
+            <div className="pointer-events-none absolute -bottom-14 -right-14 h-44 w-44 rounded-full bg-red-500/10 blur-2xl" />
+
+            <div className="flex flex-col gap-4">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-[10px] px-2.5 py-0.5 rounded-full bg-red-500/15 text-red-300 border border-red-500/30 font-medium tracking-wide">
+                  ConfirmDeleteDialog
+                </span>
+                <span className="material-symbols-outlined text-red-400 text-[18px]">
+                  warning
+                </span>
+              </div>
+
+              <div className="flex items-start gap-3.5">
+                <div className="w-11 h-11 rounded-xl bg-red-500/20 border border-red-400/30 flex items-center justify-center flex-shrink-0 shadow-[0_0_16px_rgba(239,68,68,0.25)]">
+                  <span className="material-symbols-outlined text-red-400 text-[22px]">
+                    delete_forever
+                  </span>
+                </div>
+
+                <div className="flex flex-col gap-0.5">
+                  <h3 className="text-base font-bold text-white tracking-tight leading-snug">
+                    Delete Student Record?
+                  </h3>
+                  <span className="font-mono text-[11px] text-red-400/90">
+                    Irreversible Database Mutation
+                  </span>
+                </div>
+              </div>
+
+              <div className="bg-[#0a0e17]/80 border border-red-500/20 rounded-xl p-3.5 text-xs text-slate-300 leading-relaxed">
+                <p>
+                  Are you sure you want to remove{" "}
+                  <strong className="text-white font-semibold">
+                    {studentToDelete.name}
+                  </strong>{" "}
+                  (
+                  <code className="font-mono text-[11px] text-[#7bd0ff] bg-white/[0.06] px-1.5 py-0.5 rounded border border-white/10">
+                    #{studentToDelete.id}
+                  </code>
+                  ) from the StudentHub registry? This action permanently purges the enrollment record from the database and cannot be undone.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center justify-end gap-2.5 pt-4 border-t border-white/10">
+              <button
+                type="button"
+                onClick={() => setStudentToDelete(null)}
+                disabled={deleting}
+                className="px-4 py-2 rounded-full border border-white/15 bg-white/[0.05] hover:bg-white/10 text-slate-300 font-semibold text-xs transition-all"
+              >
+                Cancel / Keep Record
+              </button>
+
+              <button
+                type="button"
+                onClick={handleConfirmDelete}
+                disabled={deleting}
+                className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-gradient-to-r from-red-600 to-rose-500 hover:from-red-500 hover:to-rose-400 text-white font-semibold text-xs transition-all duration-300 shadow-[0_0_18px_rgba(239,68,68,0.45)] hover:shadow-[0_0_24px_rgba(244,63,94,0.65)] hover:scale-[1.02] active:scale-[0.98] disabled:opacity-60 cursor-pointer"
+              >
+                <span className="material-symbols-outlined text-[16px]">
+                  delete
+                </span>
+                <span>{deleting ? "Deleting..." : "Delete Student"}</span>
+              </button>
+            </div>
           </div>
         </div>
       )}

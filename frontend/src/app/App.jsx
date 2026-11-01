@@ -2,15 +2,18 @@
 import { RouterProvider } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { ThemeProvider, useTheme } from "./providers/ThemeProvider";
 import router from "./Routes/AppRoute";
 
-function App() {
+function AppContent() {
+  const { theme } = useTheme();
+
   return (
     <>
       <RouterProvider router={router} />
       <ToastContainer
-        position="top-right"
-        autoClose={3000}
+        position="top-center"
+        autoClose={2200}
         hideProgressBar={false}
         newestOnTop
         closeOnClick
@@ -18,9 +21,18 @@ function App() {
         pauseOnFocusLoss
         draggable
         pauseOnHover
-        theme="dark"
+        theme={theme === "light" ? "light" : "dark"}
+        toastClassName="custom-compact-toast"
       />
     </>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
 

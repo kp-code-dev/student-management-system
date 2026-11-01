@@ -6,11 +6,11 @@ function PageHeader({ title, description, action }) {
       <div className="flex flex-col">
         <div className="mb-1 flex items-center gap-2">
           <span className="font-mono text-[11px] font-semibold uppercase tracking-widest text-cyan-400">
-            Registry Ops Terminal
+            StudentHub Operations
           </span>
           <span className="h-1.5 w-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#22d3ee]" />
           <span className="rounded-full border border-white/[0.08] bg-white/[0.05] px-2 py-0.5 font-mono text-[11px] text-slate-400">
-            SYS-REV-26.11
+            v2.4 Production
           </span>
         </div>
 

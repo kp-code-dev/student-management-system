@@ -13,9 +13,10 @@ function Settings() {
   const [profile, setProfile] = useState(() => {
     try {
       const savedProfile = localStorage.getItem("studenthub_profile");
+      const loggedUser = JSON.parse(localStorage.getItem("user") || "{}");
       return savedProfile
-        ? { ...DEFAULT_PROFILE, ...JSON.parse(savedProfile) }
-        : DEFAULT_PROFILE;
+        ? { ...DEFAULT_PROFILE, ...loggedUser, ...JSON.parse(savedProfile) }
+        : { ...DEFAULT_PROFILE, ...loggedUser };
     } catch {
       return DEFAULT_PROFILE;
     }

@@ -1,4 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   FiGrid,
   FiUsers,
@@ -34,6 +35,7 @@ function Sidebar({ isMobile = false, onClose }) {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
     localStorage.removeItem("isAuthenticated");
+    toast.success("Logged out successfully!");
     navigate("/login");
   };
 
@@ -65,11 +67,11 @@ function Sidebar({ isMobile = false, onClose }) {
             <span className="flex items-center gap-1.5 text-[15px] font-bold tracking-tight text-white">
               StudentHub
               <span className="rounded-full border border-cyan-400/30 bg-cyan-400/20 px-1.5 py-0.5 font-mono text-[9px] text-cyan-300">
-                v5
+                v2.4
               </span>
             </span>
             <span className="truncate text-[11px] font-medium text-slate-400">
-              Glassy OS
+              StudentHub Dashboard
             </span>
           </div>
         </div>
@@ -122,31 +124,20 @@ function Sidebar({ isMobile = false, onClose }) {
         </div>
       </div>
 
-      {/* Footer / Account Capsule */}
-      <div className="mt-6 flex flex-col gap-2 pt-3 border-t border-white/10">
-        <div className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/[0.04] p-2">
-          <div className="flex items-center gap-2.5 min-w-0">
-            <div className="relative flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-gradient-to-tr from-cyan-400 to-indigo-500 font-bold text-white text-xs shadow-md">
-              {user.name?.charAt(0) || "A"}
-              <span className="absolute bottom-0 right-0 h-2 w-2 rounded-full border border-black bg-emerald-400 shadow-[0_0_6px_#34d399]" />
-            </div>
-            <div className="flex flex-col min-w-0">
-              <span className="truncate text-xs font-semibold text-white">
-                {user.name}
-              </span>
-              <span className="truncate text-[10px] text-slate-400">
-                {user.email}
-              </span>
-            </div>
+      {/* Footer / Role & Version Badge */}
+      <div className="mt-6 flex flex-col gap-2.5 pt-3 border-t border-white/10">
+        <div className="flex items-center gap-2.5 rounded-2xl border border-indigo-400/25 bg-indigo-500/[0.08] p-3 text-left">
+          <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-indigo-500/20 border border-indigo-400/30 text-indigo-400">
+            <span className="material-symbols-outlined text-[18px]">verified_user</span>
           </div>
-
-          <button
-            onClick={handleLogout}
-            title="Sign out"
-            className="flex h-8 w-8 items-center justify-center rounded-xl text-slate-400 transition hover:bg-red-500/20 hover:text-red-400"
-          >
-            <span className="material-symbols-outlined text-[18px]">logout</span>
-          </button>
+          <div className="flex flex-col min-w-0">
+            <span className="text-xs font-bold text-white tracking-tight">
+              {user.role || "Active Role"}
+            </span>
+            <span className="text-[10px] text-indigo-300 font-mono font-medium">
+              v2.4 Production
+            </span>
+          </div>
         </div>
       </div>
     </aside>

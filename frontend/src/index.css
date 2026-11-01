@@ -53,7 +53,203 @@ body {
   color: #dfe2ef;
   font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
+
+/* Light Theme Complete Overrides with Ambient Light Gradient */
+html.light,
+html.light body,
+html.light div[class*="min-h-screen"] {
+  background: radial-gradient(circle at 15% 10%, rgba(192, 193, 255, 0.22) 0%, transparent 40%),
+              radial-gradient(circle at 85% 30%, rgba(123, 208, 255, 0.20) 0%, transparent 45%),
+              radial-gradient(circle at 50% 90%, rgba(254, 215, 170, 0.25) 0%, transparent 50%),
+              linear-gradient(180deg, #f8fafc 0%, #edf2f7 100%) !important;
+  color: #1e293b !important;
+}
+
+html.light .frosted-panel,
+html.light .aether-panel {
+  background: rgba(255, 255, 255, 0.68) !important;
+  backdrop-filter: blur(28px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 12px 35px -8px rgba(15, 23, 42, 0.07), inset 0 1px 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+html.light .frosted-dock,
+html.light .aether-dock {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.85) 0%, rgba(248, 250, 252, 0.78) 100%) !important;
+  backdrop-filter: blur(32px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(200%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.9) !important;
+  box-shadow: 0 20px 45px -10px rgba(15, 23, 42, 0.08), inset 0 1px 2px rgba(255, 255, 255, 1) !important;
+}
+
+html.light .frosted-pill,
+html.light .aether-pill {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(18px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(180%) !important;
+  border: 1px solid rgba(226, 232, 240, 0.85) !important;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04) !important;
+  color: #334155 !important;
+}
+
+/* Light Theme Ambient Glows */
+html.light .ambient-glow-1 {
+  background: radial-gradient(circle, rgba(99, 102, 241, 0.16) 0%, rgba(79, 70, 229, 0.05) 45%, transparent 70%) !important;
+}
+html.light .ambient-glow-2 {
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.15) 0%, rgba(6, 182, 212, 0.04) 45%, transparent 70%) !important;
+}
+html.light .ambient-glow-3 {
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.12) 0%, rgba(217, 119, 6, 0.03) 45%, transparent 70%) !important;
+}
+
+/* Floating Popovers (Notifications & Profile dropdowns) Frosted Glass Backdrop Filter */
+html.dark div.frosted-dock.absolute {
+  background: rgba(18, 22, 32, 0.92) !important;
+  backdrop-filter: blur(40px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.8), 0 0 25px rgba(0, 0, 0, 0.6) !important;
+}
+
+html.light div.frosted-dock.absolute {
+  background: rgba(255, 255, 255, 0.90) !important;
+  backdrop-filter: blur(40px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(40px) saturate(200%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.95) !important;
+  box-shadow: 0 25px 60px -12px rgba(15, 23, 42, 0.16), 0 0 0 1px rgba(226, 232, 240, 0.8) !important;
+}
+
+/* Light Theme Text Colors & Contrast */
+html.light h1,
+html.light h2,
+html.light h3,
+html.light h4,
+html.light .text-white,
+html.light .font-bold,
+html.light .font-semibold {
+  color: #0f172a !important;
+}
+
+html.light .text-slate-200,
+html.light .text-slate-300,
+html.light .text-slate-400,
+html.light .text-\[\#dfe2ef\],
+html.light .text-\[\#c7c4d7\] {
+  color: #475569 !important;
+}
+
+html.light .text-slate-500,
+html.light .text-\[\#908fa0\] {
+  color: #64748b !important;
+}
+
+html.light .border-white\/10,
+html.light .border-white\/\[0\.08\],
+html.light .border-white\/\[0\.06\],
+html.light .border-white\/\[0\.04\],
+html.light .border-white\/15,
+html.light .border-white\/20 {
+  border-color: rgba(226, 232, 240, 0.85) !important;
+}
+
+html.light .bg-white\/\[0\.05\],
+html.light .bg-white\/\[0\.04\],
+html.light .bg-white\/\[0\.03\],
+html.light .bg-white\/\[0\.02\],
+html.light .bg-white\/10 {
+  background-color: rgba(241, 245, 249, 0.75) !important;
+}
+
+html.light .bg-\[\#0a0e17\],
+html.light .bg-\[\#0a0e17\]\/80,
+html.light .bg-\[\#0a0e17\]\/70,
+html.light .bg-\[\#1c1f29\],
+html.light .bg-\[\#1c1f29\]\/90,
+html.light .bg-\[\#1c1f29\]\/70,
+html.light .bg-\[\#262a34\],
+html.light .bg-\[\#262a34\]\/80 {
+  background-color: rgba(255, 255, 255, 0.85) !important;
+  color: #0f172a !important;
+  border-color: rgba(226, 232, 240, 0.9) !important;
+}
+
+html.light input,
+html.light select {
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  color: #0f172a !important;
+  border-color: rgba(203, 213, 225, 0.8) !important;
+}
+
+html.light input::placeholder {
+  color: #94a3b8 !important;
+}
+
+html.light input[type="search"] {
+  background-color: rgba(241, 245, 249, 0.85) !important;
+  color: #0f172a !important;
+}
+
+html.light select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+html.light table thead tr {
+  background-color: rgba(241, 245, 249, 0.85) !important;
+  border-color: rgba(226, 232, 240, 0.9) !important;
+}
+
+html.light table tbody tr:hover {
+  background-color: rgba(241, 245, 249, 0.6) !important;
+}
+
+html.light .divide-white\/\[0\.04\] > * + * {
+  border-color: rgba(226, 232, 240, 0.75) !important;
+}
+
+html.light .text-\[\#7bd0ff\] {
+  color: #0284c7 !important;
+}
+
+html.light .text-\[\#c0c1ff\] {
+  color: #4f46e5 !important;
+}
+
+/* Light Theme Sidebar Active & Hover States */
+html.light nav a.text-slate-300 {
+  color: #475569 !important;
+}
+
+html.light nav a.text-slate-300:hover {
+  background-color: rgba(241, 245, 249, 0.9) !important;
+  color: #0f172a !important;
+}
+
+html.light nav a.bg-white\/90 {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  box-shadow: 0 4px 15px rgba(15, 23, 42, 0.08) !important;
+  border: 1px solid rgba(226, 232, 240, 0.9) !important;
+}
+
+/* Theme Switcher Pill in Light Mode */
+html.light .bg-black\/40 {
+  background-color: rgba(226, 232, 240, 0.85) !important;
+  border-color: rgba(203, 213, 225, 0.8) !important;
+}
+
+html.light .bg-black\/40 button.text-slate-400 {
+  color: #64748b !important;
+}
+
+html.light .bg-black\/40 button.text-slate-400:hover {
+  color: #0f172a !important;
+}
+
 
 /* Glassmorphism Classes directly matching the HTML design specs */
 .frosted-panel, .aether-panel {
@@ -135,3 +331,58 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(255, 255, 255, 0.25);
 }
+
+/* Compact Small-Size Glassy Toast Customization */
+.Toastify__toast-container--top-center {
+  width: auto !important;
+  max-width: 90vw !important;
+  top: 18px !important;
+}
+
+.custom-compact-toast.Toastify__toast {
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif !important;
+  min-height: 40px !important;
+  padding: 8px 14px !important;
+  border-radius: 9999px !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+  background: rgba(28, 31, 41, 0.88) !important;
+  backdrop-filter: blur(20px) !important;
+  -webkit-backdrop-filter: blur(20px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.6), 0 0 15px rgba(123, 208, 255, 0.15) !important;
+  color: #dfe2ef !important;
+  margin-bottom: 8px !important;
+}
+
+.custom-compact-toast .Toastify__toast-body {
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  font-size: 12px !important;
+}
+
+.custom-compact-toast .Toastify__toast-icon {
+  width: 16px !important;
+  margin-inline-end: 8px !important;
+}
+
+.custom-compact-toast .Toastify__close-button {
+  color: #908fa0 !important;
+  opacity: 0.7 !important;
+  align-self: center !important;
+  padding-left: 8px !important;
+}
+
+.custom-compact-toast .Toastify__close-button:hover {
+  color: #fff !important;
+  opacity: 1 !important;
+}
+
+.custom-compact-toast .Toastify__progress-bar {
+  height: 2px !important;
+}
+

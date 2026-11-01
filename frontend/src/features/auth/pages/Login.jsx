@@ -12,7 +12,7 @@ import {
 
 function Login() {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("admin@studenthub.edu");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(true);
   const [loading, setLoading] = useState(false);
