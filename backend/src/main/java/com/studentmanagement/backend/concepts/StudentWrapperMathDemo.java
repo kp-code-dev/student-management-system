@@ -1,3 +1,11 @@
+/*
+ * COURSE: Core Java - CAM5001C
+ * UNIT: Unit 2
+ * TOPIC: Wrapper Classes, Autoboxing, Unboxing, and Math Class
+ * PURPOSE: Demonstrates conversion between primitive data types and objects,
+ *          along with mathematical operations for student score processing.
+ */
+
 package com.studentmanagement.backend.concepts;
 
 public class StudentWrapperMathDemo {

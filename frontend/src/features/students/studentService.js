@@ -30,3 +30,14 @@ export const deleteStudent = (id) => {
     method: "DELETE",
   });
 };
+
+export const getMyStudentProfile = () => {
+  return apiRequest(`${STUDENTS_ENDPOINT}/me`);
+};
+
+export const updateMyStudentProfile = (profileData) => {
+  return apiRequest(`${STUDENTS_ENDPOINT}/me`, {
+    method: "PUT",
+    body: JSON.stringify(profileData),
+  });
+};

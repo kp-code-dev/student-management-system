@@ -54,8 +54,52 @@ function Topbar({ onMenuClick }) {
   const inputRef = useRef(null);
   const modalInputRef = useRef(null);
 
-  // Filter sidebar pages based on search input
-  const filteredPages = SIDEBAR_PAGES.filter((page) =>
+  const user = (() => {
+    try {
+      return (
+        JSON.parse(localStorage.getItem("user")) || {
+          name: "User",
+          email: "user@studenthub.edu",
+          role: "STUDENT",
+        }
+      );
+    } catch {
+      return { name: "User", email: "user@studenthub.edu", role: "STUDENT" };
+    }
+  })();
+
+  let role = (user.role || "STUDENT").toUpperCase().replace("ROLE_", "");
+  if (role === "USER") role = "STUDENT";
+  const isAdmin = role === "ADMIN";
+
+  // Filter sidebar pages based on role and search input
+  const allowedPages = isAdmin
+    ? SIDEBAR_PAGES
+    : [
+        {
+          name: "Student Dashboard",
+          path: "/student-dashboard",
+          icon: "dashboard",
+          group: "STUDENT PORTAL",
+          description: "Student welcome, profile summary, course details and quick overview",
+        },
+        {
+          name: "My Profile",
+          path: "/student-profile",
+          icon: "account_circle",
+          group: "STUDENT PORTAL",
+          description: "Locked official records and permitted personal details (Name & Phone)",
+        },
+        {
+          name: "Account Settings",
+          path: "/student-settings",
+          icon: "manage_accounts",
+          group: "STUDENT PORTAL",
+          description: "Full account information, change password and secure logout",
+        },
+      ];
+
+  const filteredPages = allowedPages.filter((page) =>
     `${page.name} ${page.group} ${page.description}`
       .toLowerCase()
       .includes(search.toLowerCase())
@@ -109,19 +153,6 @@ function Topbar({ onMenuClick }) {
     setSearch("");
     navigate(path);
   };
-
-  const user = (() => {
-    try {
-      return (
-        JSON.parse(localStorage.getItem("user")) || {
-          name: "Admin User",
-          email: "admin@studenthub.edu",
-        }
-      );
-    } catch {
-      return { name: "Admin User", email: "admin@studenthub.edu" };
-    }
-  })();
 
   return (
     <>
@@ -248,7 +279,7 @@ function Topbar({ onMenuClick }) {
                   {user.name}
                 </span>
                 <span className="text-[10px] text-slate-400 capitalize">
-                  {user.role ? user.role.toLowerCase() : "Admin"}
+                  {isAdmin ? "Faculty" : (user.role ? user.role.toLowerCase() : "Student")}
                 </span>
               </div>
             </button>
@@ -259,26 +290,53 @@ function Topbar({ onMenuClick }) {
                   <p className="font-semibold text-white truncate">{user.name}</p>
                   <p className="text-slate-400 truncate">{user.email}</p>
                 </div>
-                <button
-                  onClick={() => {
-                    setShowProfile(false);
-                    navigate("/settings");
-                  }}
-                  className="mt-1 block w-full text-left rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-white/10 hover:text-white"
-                >
-                  Settings
-                </button>
+                {!isAdmin ? (
+                  <>
+                    <button
+                      onClick={() => {
+                        setShowProfile(false);
+                        navigate("/student-profile");
+                      }}
+                      className="mt-1 flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-white/10 hover:text-white"
+                    >
+                      <span className="material-symbols-outlined text-sm">account_circle</span>
+                      <span>My Profile</span>
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowProfile(false);
+                        navigate("/student-settings");
+                      }}
+                      className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-white/10 hover:text-white"
+                    >
+                      <span className="material-symbols-outlined text-sm">key</span>
+                      <span>Change Password</span>
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    onClick={() => {
+                      setShowProfile(false);
+                      navigate("/settings");
+                    }}
+                    className="mt-1 block w-full text-left rounded-xl px-3 py-2 text-xs text-slate-300 hover:bg-white/10 hover:text-white"
+                  >
+                    Settings
+                  </button>
+                )}
                 <button
                   onClick={() => {
                     localStorage.removeItem("token");
                     localStorage.removeItem("user");
                     localStorage.removeItem("isAuthenticated");
+                    localStorage.removeItem("studenthub_student_profile");
                     toast.success("Logged out successfully!");
                     navigate("/login");
                   }}
-                  className="block w-full text-left rounded-xl px-3 py-2 text-xs text-red-400 hover:bg-red-500/20"
+                  className="mt-1 flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs text-red-400 hover:bg-red-500/20"
                 >
-                  Sign Out
+                  <span className="material-symbols-outlined text-sm">logout</span>
+                  <span>Sign Out</span>
                 </button>
               </div>
             )}

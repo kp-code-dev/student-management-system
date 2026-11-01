@@ -59,22 +59,36 @@ public class AuthService {
         // Hashes the password before storing it in the database.
         user.setPassword(passwordEncoder.encode(request.getPassword()));
 
-        // Assigns the default USER role.
-        user.setRole("USER");
+        // Assigns role: Any faculty email ending with @studenthub.edu is granted ROLE_FACULTY (Faculty).
+        // Otherwise, standard students receive ROLE_STUDENT.
+        String email = request.getEmail().trim().toLowerCase();
+
+        if (email.endsWith("@studenthub.edu")) {
+            throw new RuntimeException("Faculty accounts can only be created by Admin");
+        }
+
+        String assignedRole = "ROLE_STUDENT";
+        user.setRole(assignedRole);
 
         // Saves the new user in the database.
         AppUser savedUser = appUserRepository.save(user);
 
-        // Generates a JWT token for the registered user.
-        String token = jwtService.generateToken(savedUser.getEmail());
+        // Include role and userId claims in JWT
+        java.util.Map<String, Object> claims = new java.util.HashMap<>();
+        claims.put("role", assignedRole);
+        claims.put("userId", savedUser.getId());
 
-        // Returns the token and user details.
+        // Generates a JWT token for the registered user.
+        String token = jwtService.generateToken(savedUser.getEmail(), claims);
+
+        // Returns the token and user details (role without ROLE_ prefix for clean frontend consumption if desired, or standardized)
+        String roleName = savedUser.getRole().replace("ROLE_", "");
         return new AuthResponse(
                 token,
                 savedUser.getId(),
                 savedUser.getName(),
                 savedUser.getEmail(),
-                savedUser.getRole()
+                roleName
         );
     }
 
@@ -94,8 +108,25 @@ public class AuthService {
         AppUser user = appUserRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        // Normalize stored role: Any user with @studenthub.edu is treated as Faculty / ADMIN
+        String storedRole = user.getRole();
+
+        if (storedRole == null || storedRole.isBlank()) {
+            throw new RuntimeException("User role is not assigned");
+        }
+
+        if (!storedRole.startsWith("ROLE_")) {
+            storedRole = "ROLE_" + storedRole.toUpperCase();
+        }
+
+        java.util.Map<String, Object> claims = new java.util.HashMap<>();
+        claims.put("role", storedRole);
+        claims.put("userId", user.getId());
+
         // Generates a new JWT token after successful login.
-        String token = jwtService.generateToken(user.getEmail());
+        String token = jwtService.generateToken(user.getEmail(), claims);
+
+        String roleName = storedRole.replace("ROLE_", "");
 
         // Returns the token and user details to the frontend.
         return new AuthResponse(
@@ -103,7 +134,22 @@ public class AuthService {
                 user.getId(),
                 user.getName(),
                 user.getEmail(),
-                user.getRole()
+                roleName
         );
+    }
+
+    // Allows authenticated users to change their password securely
+    public void changePassword(String email, com.studentmanagement.backend.dto.auth.ChangePasswordRequest request) {
+        AppUser user = appUserRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+
+        // Verify current password matches
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new RuntimeException("Current password does not match!");
+        }
+
+        // Encode and update new password
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        appUserRepository.save(user);
     }
 }

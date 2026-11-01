@@ -1,53 +1,53 @@
+/*
+ * COURSE: Core Java - CAM5001C
+ * UNIT: Unit 3
+ * TOPIC: Multithreading - Thread Lifecycle and Execution States
+ * PURPOSE: Demonstrates transitions across thread lifecycle states:
+ *          NEW, RUNNABLE, TIMED_WAITING, and TERMINATED using student tasks.
+ */
+
 package com.studentmanagement.backend.concepts;
 
 public class StudentThreadLifecycleDemo {
 
-    public static void main(String[] args)
-            throws InterruptedException {
+    public static void main(String[] args) throws InterruptedException {
+        System.out.println("=== UNIT 3: THREAD LIFECYCLE & EXECUTION STATES ===");
 
-        // Unit 3: Main Thread
+        // Display current thread
         Thread mainThread = Thread.currentThread();
+        System.out.println("Main Thread executing: " + mainThread.getName());
 
-        System.out.println(
-            "Main Thread: " + mainThread.getName()
-        );
-
-        // Unit 3: Thread Creation
-        Thread studentThread = new Thread(() -> {
-
-            // Unit 3: Runnable state while executing
-            System.out.println("Student task started.");
-
+        // UNIT 3 - TOPIC: Thread Creation & State NEW
+        Thread workerThread = new Thread(() -> {
             try {
-
-                // Unit 3: TIMED_WAITING state
-                Thread.sleep(2000);
-
+                System.out.println("[Worker] Thread is in RUNNABLE state.");
+                // Transition to TIMED_WAITING
+                System.out.println("[Worker] Simulating asynchronous task (sleeping 1000ms)...");
+                Thread.sleep(1000);
+                System.out.println("[Worker] Completed student task.");
             } catch (InterruptedException e) {
-
-                // Unit 3: Exception Handling
-                System.out.println("Thread interrupted.");
+                System.err.println("[Worker] Interrupted during sleep.");
                 Thread.currentThread().interrupt();
             }
+        }, "Lifecycle-Worker-Thread");
 
-            System.out.println("Student task completed.");
+        // 1. NEW State
+        System.out.println("1. Thread state before start(): " + workerThread.getState()); // NEW
 
-        }, "StudentThread");
+        // 2. Start thread -> RUNNABLE
+        workerThread.start();
+        System.out.println("2. Thread state immediately after start(): " + workerThread.getState()); // RUNNABLE
 
-        // Unit 3: NEW state
-        System.out.println(
-            "Before start: " + studentThread.getState()
-        );
+        // Brief pause to inspect TIMED_WAITING state
+        Thread.sleep(300);
+        System.out.println("3. Thread state during sleep: " + workerThread.getState()); // TIMED_WAITING
 
-        // Unit 3: Starting a thread
-        studentThread.start();
+        // 3. Wait for worker thread to finish using join()
+        workerThread.join();
 
-        // Unit 3: Waiting for thread completion
-        studentThread.join();
+        // 4. TERMINATED State
+        System.out.println("4. Thread state after join() completion: " + workerThread.getState()); // TERMINATED
 
-        // Unit 3: TERMINATED state
-        System.out.println(
-            "After completion: " + studentThread.getState()
-        );
+        System.out.println("=== END OF UNIT 3 THREAD LIFECYCLE DEMONSTRATION ===");
     }
 }

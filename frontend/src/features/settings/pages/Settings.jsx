@@ -1,24 +1,31 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import PageHeader from "@/components/shared/PageHeader";
+import { getCurrentUser } from "@/features/auth/authService";
+import { getMyStudentProfile, updateMyStudentProfile } from "@/features/students/studentService";
 
 const DEFAULT_PROFILE = {
-  name: "Admin User",
-  email: "admin@studenthub.edu",
+  name: "User",
+  email: "user@studenthub.edu",
   institution: "StudentHub University Academy",
-  role: "Chief Administrator",
+  role: "STUDENT",
+  phone: "",
+  course: "Master of Computer Applications (MCA)",
 };
 
 function Settings() {
+  const loggedUser = getCurrentUser() || {};
+  const role = (loggedUser.role || "STUDENT").toUpperCase().replace("ROLE_", "");
+  const isAdmin = role === "ADMIN";
+
   const [profile, setProfile] = useState(() => {
     try {
       const savedProfile = localStorage.getItem("studenthub_profile");
-      const loggedUser = JSON.parse(localStorage.getItem("user") || "{}");
       return savedProfile
         ? { ...DEFAULT_PROFILE, ...loggedUser, ...JSON.parse(savedProfile) }
         : { ...DEFAULT_PROFILE, ...loggedUser };
     } catch {
-      return DEFAULT_PROFILE;
+      return { ...DEFAULT_PROFILE, ...loggedUser };
     }
   });
 
@@ -27,6 +34,28 @@ function Settings() {
   });
 
   const [saved, setSaved] = useState(false);
+  const [savingBackend, setSavingBackend] = useState(false);
+
+  // If student, try to load profile from backend
+  useEffect(() => {
+    if (!isAdmin) {
+      getMyStudentProfile()
+        .then((data) => {
+          if (data) {
+            setProfile((prev) => ({
+              ...prev,
+              name: data.name || prev.name,
+              email: data.email || prev.email,
+              phone: data.phone || prev.phone,
+              course: data.course || prev.course,
+            }));
+          }
+        })
+        .catch(() => {
+          // Fallback gracefully to local profile
+        });
+    }
+  }, [isAdmin]);
 
   const handleChange = (e) => {
     setProfile({
@@ -36,11 +65,41 @@ function Settings() {
     setSaved(false);
   };
 
-  const handleSave = () => {
-    localStorage.setItem("studenthub_profile", JSON.stringify(profile));
-    localStorage.setItem("studenthub_notifications", String(notifications));
-    setSaved(true);
-    toast.success("Settings saved successfully!");
+  const handleSave = async () => {
+    try {
+      setSavingBackend(true);
+      // If student, synchronize with backend
+      if (!isAdmin) {
+        await updateMyStudentProfile({
+          name: profile.name,
+          phone: profile.phone,
+          course: profile.course,
+        }).catch((err) => {
+          console.warn("Backend update notice:", err.message);
+        });
+      }
+
+      localStorage.setItem("studenthub_profile", JSON.stringify(profile));
+      localStorage.setItem("studenthub_notifications", String(notifications));
+
+      // Update current user cached name
+      if (profile.name) {
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            ...loggedUser,
+            name: profile.name,
+          })
+        );
+      }
+
+      setSaved(true);
+      toast.success("Profile preferences saved successfully!");
+    } catch {
+      toast.error("Failed to save settings.");
+    } finally {
+      setSavingBackend(false);
+    }
   };
 
   useEffect(() => {
@@ -50,8 +109,12 @@ function Settings() {
   return (
     <div className="space-y-6">
       <PageHeader
-        title="System & Account Settings"
-        description="Manage your administrator profile, system configurations, and security preferences."
+        title={isAdmin ? "Faculty Profile & Account Settings" : "Student Profile & Settings"}
+        description={
+          isAdmin
+            ? "Manage your faculty profile, department configurations, and security preferences."
+            : "Review your student personal profile, contact information, and notifications."
+        }
       />
 
       {/* Profile Section */}
@@ -64,10 +127,10 @@ function Settings() {
           </div>
           <div>
             <h2 className="text-lg font-bold tracking-tight text-white">
-              Institutional Profile
+              {isAdmin ? "Faculty Profile" : "Student Profile"}
             </h2>
             <p className="text-xs text-slate-400">
-              Personal credentials and organization information
+              Personal credentials and registered contact information
             </p>
           </div>
         </div>
@@ -75,7 +138,7 @@ function Settings() {
         <div className="grid grid-cols-1 gap-5 md:grid-cols-2">
           <div>
             <label className="mb-1.5 block font-mono text-[11px] uppercase tracking-wider text-slate-300">
-              Full Administrator Name
+              {isAdmin ? "Full Faculty Name" : "Student Full Name"}
             </label>
             <input
               name="name"
@@ -87,11 +150,23 @@ function Settings() {
 
           <div>
             <label className="mb-1.5 block font-mono text-[11px] uppercase tracking-wider text-slate-300">
-              Administrative Email
+              Institutional Email (Immutable)
             </label>
             <input
               name="email"
+              disabled
               value={profile.email}
+              className="h-11 w-full rounded-xl border border-white/5 bg-[#0a0e17]/40 px-4 text-xs text-slate-400 outline-none cursor-not-allowed"
+            />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block font-mono text-[11px] uppercase tracking-wider text-slate-300">
+              {isAdmin ? "Department / Institution" : "Enrolled Course / Degree"}
+            </label>
+            <input
+              name={isAdmin ? "institution" : "course"}
+              value={isAdmin ? profile.institution : profile.course}
               onChange={handleChange}
               className="h-11 w-full rounded-xl border border-white/10 bg-[#0a0e17]/80 px-4 text-xs text-white outline-none focus:border-cyan-400/50"
             />
@@ -99,26 +174,24 @@ function Settings() {
 
           <div>
             <label className="mb-1.5 block font-mono text-[11px] uppercase tracking-wider text-slate-300">
-              Institution Name
+              {isAdmin ? "Access Role" : "Contact Phone"}
             </label>
-            <input
-              name="institution"
-              value={profile.institution}
-              onChange={handleChange}
-              className="h-11 w-full rounded-xl border border-white/10 bg-[#0a0e17]/80 px-4 text-xs text-white outline-none focus:border-cyan-400/50"
-            />
-          </div>
-
-          <div>
-            <label className="mb-1.5 block font-mono text-[11px] uppercase tracking-wider text-slate-300">
-              Access Role
-            </label>
-            <input
-              name="role"
-              value={profile.role}
-              onChange={handleChange}
-              className="h-11 w-full rounded-xl border border-white/10 bg-[#0a0e17]/80 px-4 text-xs text-white outline-none focus:border-cyan-400/50"
-            />
+            {isAdmin ? (
+              <input
+                name="role"
+                disabled
+                value={role}
+                className="h-11 w-full rounded-xl border border-white/5 bg-[#0a0e17]/40 px-4 text-xs text-slate-400 outline-none cursor-not-allowed"
+              />
+            ) : (
+              <input
+                name="phone"
+                value={profile.phone || ""}
+                onChange={handleChange}
+                placeholder="+91 9876543210"
+                className="h-11 w-full rounded-xl border border-white/10 bg-[#0a0e17]/80 px-4 text-xs text-white outline-none focus:border-cyan-400/50"
+              />
+            )}
           </div>
         </div>
       </section>
@@ -139,65 +212,71 @@ function Settings() {
           </div>
         </div>
 
-        <label className="flex cursor-pointer items-center justify-between gap-4 rounded-2xl border border-white/10 bg-white/[0.03] p-4 transition hover:bg-white/[0.06]">
+        <div className="flex items-center justify-between rounded-2xl border border-white/5 bg-[#0a0e17]/50 p-4">
           <div>
-            <p className="text-xs font-semibold text-white">
-              Enable Push & Operational Telemetry Alerts
-            </p>
-            <p className="mt-0.5 text-[11px] text-slate-400">
-              Receive updates when new student records are matriculated or altered.
+            <span className="text-sm font-semibold text-white">
+              Email Notifications
+            </span>
+            <p className="text-xs text-slate-400">
+              Receive updates on academic notices, enrollment events and system maintenance.
             </p>
           </div>
 
-          <input
-            type="checkbox"
-            checked={notifications}
-            onChange={(e) => {
-              setNotifications(e.target.checked);
-              setSaved(false);
-            }}
-            className="h-5 w-5 accent-cyan-400 cursor-pointer"
-          />
-        </label>
+          <label className="relative inline-flex cursor-pointer items-center">
+            <input
+              type="checkbox"
+              checked={notifications}
+              onChange={(e) => setNotifications(e.target.checked)}
+              className="peer sr-only"
+            />
+            <div className="peer h-6 w-11 rounded-full bg-slate-800 after:absolute after:top-[2px] after:left-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all after:content-[''] peer-checked:bg-cyan-500 peer-checked:after:translate-x-full peer-focus:outline-none" />
+          </label>
+        </div>
       </section>
 
-      {/* Security */}
+      {/* Security Architecture Notice */}
       <section className="frosted-panel rounded-3xl p-6">
-        <div className="mb-3 flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-amber-400/30 bg-amber-500/20 text-amber-300">
-            <span className="material-symbols-outlined text-[20px]">lock</span>
+        <div className="mb-4 flex items-center gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl border border-emerald-400/30 bg-emerald-500/20 text-emerald-300">
+            <span className="material-symbols-outlined text-[20px]">shield</span>
           </div>
           <div>
             <h2 className="text-lg font-bold tracking-tight text-white">
-              Security & Environment Status
+              Role & Security Policy
             </h2>
             <p className="text-xs text-slate-400">
-              Spring Boot REST API endpoint & JWT token integrity
+              Role-Based Access Control (RBAC) enforced via Spring Security & JWT
             </p>
           </div>
         </div>
 
-        <p className="text-xs text-slate-300 leading-relaxed">
-          Active session is authenticated with Spring Boot JWT Bearer tokens with SHA-256 encryption. To alter backend connection endpoints, edit <code className="rounded bg-black/40 px-2 py-0.5 font-mono text-cyan-300">src/services/api.js</code>.
-        </p>
+        <div className="rounded-2xl border border-white/5 bg-[#0a0e17]/50 p-4 space-y-2 text-xs text-slate-300">
+          <p>
+            <span className="font-semibold text-white">Active Identity: </span>
+            {profile.name} ({profile.email})
+          </p>
+          <p>
+            <span className="font-semibold text-white">Enforced Role: </span>
+            <span className="rounded bg-indigo-500/20 px-2 py-0.5 text-indigo-300 font-mono">
+              {role}
+            </span>
+          </p>
+          <p className="text-slate-400">
+            All administrative student mutation APIs (POST, PUT, DELETE) require verified Faculty / Admin authorization on the Spring Boot backend.
+          </p>
+        </div>
       </section>
 
-      {/* Actions */}
-      <div className="flex items-center justify-end gap-4">
-        {saved && (
-          <p className="text-xs font-semibold text-emerald-400 flex items-center gap-1.5">
-            <span className="material-symbols-outlined text-base">check_circle</span>
-            Preferences updated successfully!
-          </p>
-        )}
-
+      {/* Save Action */}
+      <div className="flex justify-end gap-3">
         <button
           onClick={handleSave}
+          disabled={savingBackend}
           type="button"
-          className="flex cursor-pointer items-center gap-2 rounded-full bg-gradient-to-r from-cyan-500 to-indigo-500 px-6 py-2.5 text-xs font-bold text-white shadow-[0_0_20px_rgba(6,182,212,0.35)] transition-all hover:scale-105 active:scale-95"
+          className="group relative inline-flex cursor-pointer items-center gap-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-500 px-6 py-3 text-xs font-bold text-slate-950 shadow-[0_0_20px_rgba(245,158,11,0.4)] transition-all hover:scale-105 active:scale-95 disabled:opacity-60"
         >
-          <span className="material-symbols-outlined text-[16px]">save</span>
-          <span>Save Changes</span>
+          <span className="material-symbols-outlined text-[18px]">save</span>
+          <span>{savingBackend ? "Saving..." : saved ? "Preferences Saved" : "Save Settings"}</span>
         </button>
       </div>
     </div>

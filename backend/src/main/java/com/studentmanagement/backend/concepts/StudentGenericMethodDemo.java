@@ -1,38 +1,58 @@
-package com.studentmanagement.backend.concepts;
+/*
+ * COURSE: Core Java - CAM5001C
+ * UNIT: Unit 4
+ * TOPIC: Generic Methods
+ * PURPOSE: Demonstrates generic methods with type parameters that operate
+ *          across different data types (arrays, collections, elements).
+ */
 
-// Unit 4: Generic Programming
-// Topic: Creating and Using Generic Methods
+package com.studentmanagement.backend.concepts;
 
 public class StudentGenericMethodDemo {
 
-    // Unit 4: Generic Method
-    // <T> represents a generic type parameter.
-    // This method can accept different types of values.
-    public static <T> void displayValue(T value) {
-
-        System.out.println("Value: " + value);
+    // UNIT 4 - TOPIC: Generic Method
+    // <T> declares a generic type parameter before the return type
+    public static <T> void printElement(T element) {
+        System.out.println("Element (" + element.getClass().getSimpleName() + "): " + element);
     }
 
-    // Unit 2: Method Overloading
-    // Same method name with different parameter types.
-    public static void displayStudent(String name) {
-
-        System.out.println("Student Name: " + name);
+    // Generic method to print an array of any object type
+    public static <T> void printArray(T[] array) {
+        System.out.print("[");
+        for (int i = 0; i < array.length; i++) {
+            System.out.print(array[i]);
+            if (i < array.length - 1) System.out.print(", ");
+        }
+        System.out.println("]");
     }
 
-    // Main method to execute the examples.
+    // Generic method returning the first element or null
+    public static <T> T getFirst(T[] array) {
+        if (array == null || array.length == 0) return null;
+        return array[0];
+    }
+
     public static void main(String[] args) {
+        System.out.println("=== UNIT 4: GENERIC METHODS DEMONSTRATION ===");
 
-        // Unit 4: Generic Method with String.
-        displayValue("Rahul");
+        // Generic method with different single argument types
+        System.out.println("\n--- 1. Generic printElement ---");
+        printElement("MCA - Core Java 2026");
+        printElement(2026);
+        printElement(98.5);
 
-        // Unit 4: Generic Method with Integer.
-        displayValue(101);
+        // Generic method with String array
+        System.out.println("\n--- 2. Generic printArray (String[]) ---");
+        String[] studentNames = {"Rahul Sharma", "Priya Patel", "Amit Verma"};
+        printArray(studentNames);
+        System.out.println("First student: " + getFirst(studentNames));
 
-        // Unit 4: Generic Method with Double.
-        displayValue(85.5);
+        // Generic method with Integer array (marks)
+        System.out.println("\n--- 3. Generic printArray (Integer[]) ---");
+        Integer[] marks = {85, 90, 92, 88};
+        printArray(marks);
+        System.out.println("First mark: " + getFirst(marks));
 
-        // Unit 2: Calling a method.
-        displayStudent("Rahul");
+        System.out.println("\n=== END OF GENERIC METHODS DEMONSTRATION ===");
     }
 }

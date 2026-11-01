@@ -30,6 +30,8 @@ public class Student {
 
     private String course;
     private String phone;
+    private String gender;
+    private String birthdate;
 
     // Unit 2: Constructors
     // Default constructor required by JPA.
@@ -42,6 +44,15 @@ public class Student {
         this.email = email;
         this.course = course;
         this.phone = phone;
+    }
+
+    public Student(String name, String email, String course, String phone, String gender, String birthdate) {
+        this.name = name;
+        this.email = email;
+        this.course = course;
+        this.phone = phone;
+        this.gender = gender;
+        this.birthdate = birthdate;
     }
 
     // Unit 2: Encapsulation - Getter and Setter methods.
@@ -83,5 +94,21 @@ public class Student {
 
     public void setPhone(String phone) {
         this.phone = phone;
+    }
+
+    public String getGender() {
+        return gender;
+    }
+
+    public void setGender(String gender) {
+        this.gender = gender;
+    }
+
+    public String getBirthdate() {
+        return birthdate;
+    }
+
+    public void setBirthdate(String birthdate) {
+        this.birthdate = birthdate;
     }
 }

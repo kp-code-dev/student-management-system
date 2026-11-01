@@ -1,51 +1,53 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import {
-  FiGrid,
-  FiUsers,
-  FiBookOpen,
-  FiBarChart2,
-  FiSettings,
-  FiHelpCircle,
-  FiLogOut,
-} from "react-icons/fi";
-
-const navigation = [
-  {
-    title: "WORKSPACE",
-    items: [
-      { name: "Overview", path: "/dashboard", icon: "dashboard" },
-      { name: "Students", path: "/students", icon: "group" },
-      { name: "Courses", path: "/courses", icon: "menu_book" },
-    ],
-  },
-  {
-    title: "ANALYTICS & MGMT",
-    items: [
-      { name: "Reports", path: "/reports", icon: "monitoring" },
-      { name: "Settings", path: "/settings", icon: "settings" },
-    ],
-  },
-];
+import { logoutUser, getCurrentUser } from "@/features/auth/authService";
 
 function Sidebar({ isMobile = false, onClose }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    localStorage.removeItem("isAuthenticated");
+    logoutUser();
     toast.success("Logged out successfully!");
     navigate("/login");
   };
 
-  const user = (() => {
-    try {
-      return JSON.parse(localStorage.getItem("user")) || { name: "Admin User", email: "admin@studenthub.edu" };
-    } catch {
-      return { name: "Admin User", email: "admin@studenthub.edu" };
-    }
-  })();
+  const user = getCurrentUser() || { name: "User", email: "user@studenthub.edu", role: "STUDENT" };
+  let role = (user.role || "STUDENT").toUpperCase().replace("ROLE_", "");
+  if (role === "USER") role = "STUDENT";
+  const isAdmin = role === "ADMIN";
+
+  // Role-aware navigation definitions
+  const adminNav = [
+    {
+      title: "WORKSPACE",
+      items: [
+        { name: "Overview", path: "/dashboard", icon: "dashboard" },
+        { name: "Students", path: "/students", icon: "group" },
+        { name: "Faculty", path: "/faculty", icon: "badge" },
+        { name: "Courses", path: "/courses", icon: "menu_book" },
+      ],
+    },
+    {
+      title: "ANALYTICS & MGMT",
+      items: [
+        { name: "Reports", path: "/reports", icon: "monitoring" },
+        { name: "Settings", path: "/settings", icon: "settings" },
+      ],
+    },
+  ];
+
+  const studentNav = [
+    {
+      title: "STUDENT PORTAL",
+      items: [
+        { name: "Student Dashboard", path: "/student-dashboard", icon: "dashboard" },
+        { name: "My Profile", path: "/student-profile", icon: "account_circle" },
+        { name: "Change Password", path: "/student-settings", icon: "key" },
+      ],
+    },
+  ];
+
+  const navigation = isAdmin ? adminNav : studentNav;
 
   const asideClasses = isMobile
     ? "h-full w-full frosted-dock rounded-[28px] p-4 flex flex-col justify-between overflow-y-auto"
@@ -67,11 +69,11 @@ function Sidebar({ isMobile = false, onClose }) {
             <span className="flex items-center gap-1.5 text-[15px] font-bold tracking-tight text-white">
               StudentHub
               <span className="rounded-full border border-cyan-400/30 bg-cyan-400/20 px-1.5 py-0.5 font-mono text-[9px] text-cyan-300">
-                v2.4
+                v2.5
               </span>
             </span>
             <span className="truncate text-[11px] font-medium text-slate-400">
-              StudentHub Dashboard
+              {isAdmin ? "Faculty Portal" : "Student Portal"}
             </span>
           </div>
         </div>
@@ -89,7 +91,7 @@ function Sidebar({ isMobile = false, onClose }) {
                   <NavLink
                     key={item.path}
                     to={item.path}
-                    end={item.path === "/dashboard"}
+                    end={item.path === "/dashboard" || item.path === "/student-dashboard"}
                     onClick={onClose}
                     className={({ isActive }) =>
                       isActive
@@ -128,17 +130,31 @@ function Sidebar({ isMobile = false, onClose }) {
       <div className="mt-6 flex flex-col gap-2.5 pt-3 border-t border-white/10">
         <div className="flex items-center gap-2.5 rounded-2xl border border-indigo-400/25 bg-indigo-500/[0.08] p-3 text-left">
           <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-indigo-500/20 border border-indigo-400/30 text-indigo-400">
-            <span className="material-symbols-outlined text-[18px]">verified_user</span>
+            <span className="material-symbols-outlined text-[18px]">
+              {isAdmin ? "security" : "school"}
+            </span>
           </div>
           <div className="flex flex-col min-w-0">
             <span className="text-xs font-bold text-white tracking-tight">
-              {user.role || "Active Role"}
+              {isAdmin ? "Faculty Role" : "Student Role"}
             </span>
-            <span className="text-[10px] text-indigo-300 font-mono font-medium">
-              v2.4 Production
+            <span className="text-[10px] text-indigo-300 font-mono font-medium truncate">
+              {user.email || "Active User"}
             </span>
           </div>
         </div>
+
+        {/* Sign out visible only for Admin; for students, Sign out is in top-right profile and Change Password page */}
+        {isAdmin && (
+          <button
+            onClick={handleLogout}
+            type="button"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl border border-white/10 bg-white/[0.04] py-2.5 text-xs font-semibold text-slate-300 transition hover:bg-red-500/20 hover:border-red-500/30 hover:text-red-300"
+          >
+            <span className="material-symbols-outlined text-[16px]">logout</span>
+            <span>Sign Out</span>
+          </button>
+        )}
       </div>
     </aside>
   );

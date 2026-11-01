@@ -1,126 +1,232 @@
+/*
+ * COURSE: Core Java - CAM5001C
+ * UNIT: Unit 2
+ * TOPIC: Classes and Objects, Constructors, 'this' keyword, Static Members,
+ *        Inheritance, Abstract Classes, Interfaces, Method Overloading,
+ *        Method Overriding, Arrays and Data Handling
+ * PURPOSE: Demonstrates fundamental and advanced OOP concepts using
+ *          Student Management entities and academic records.
+ */
+
 package com.studentmanagement.backend.concepts;
 
-// Unit 2: Abstract Class
-abstract class Person {
+// UNIT 2 - TOPIC: Interfaces
+// An interface defines a contract that implementing classes must fulfill.
+interface AcademicEntity {
+    // Abstract method to display formatted details
+    void displayDetails();
+    
+    // Abstract method returning a summary string
+    String getSummary();
+}
 
-    // Unit 2: Encapsulation and protected access modifier
+// UNIT 2 - TOPIC: Abstract Classes
+// An abstract class provides a common base for all persons in the institution.
+abstract class AcademicPerson implements AcademicEntity {
+    // Encapsulated attributes
     protected String name;
+    protected String email;
 
-    public Person(String name) {
-        this.name = name;
+    // UNIT 2 - TOPIC: Static Members
+    // Static variable shared across all instances of AcademicPerson
+    protected static int totalPersonsRegistered = 0;
+
+    // UNIT 2 - TOPIC: Constructors & 'this' keyword
+    // Parameterized constructor initializing instance variables
+    public AcademicPerson(String name, String email) {
+        this.name = name;      // 'this' distinguishes instance field from constructor parameter
+        this.email = email;
+        totalPersonsRegistered++; // Increment shared static counter
     }
 
-    // Unit 2: Abstract Method
-    abstract void displayRole();
-
-    // Unit 2: final method cannot be overridden
-    public final void showCategory() {
-        System.out.println("Category: Person");
+    // Default / No-arg constructor
+    public AcademicPerson() {
+        this("Unknown", "unknown@university.edu"); // Constructor chaining using this(...)
     }
 
-    // Unit 2: Object class method overriding
+    // UNIT 2 - TOPIC: Static Method
+    public static int getTotalPersonsRegistered() {
+        return totalPersonsRegistered;
+    }
+
+    // UNIT 2 - TOPIC: Abstract Method
+    // Must be implemented by concrete subclasses
+    public abstract String getRole();
+
+    // Concrete method inherited by subclasses
+    public String getEmail() {
+        return this.email;
+    }
+}
+
+// UNIT 2 - TOPIC: Inheritance (Subclass extends Superclass)
+// StudentMember inherits properties and methods from AcademicPerson
+class StudentMember extends AcademicPerson {
+    private String enrollmentNumber;
+    private String course;
+    // UNIT 2 - TOPIC: Arrays and data handling
+    private int[] semesterMarks;
+
+    // UNIT 2 - TOPIC: Constructor Overloading & 'super' keyword
+    public StudentMember(String name, String email, String enrollmentNumber, String course, int[] semesterMarks) {
+        super(name, email); // Calls superclass constructor
+        this.enrollmentNumber = enrollmentNumber;
+        this.course = course;
+        this.semesterMarks = semesterMarks != null ? semesterMarks : new int[0];
+    }
+
+    // Overloaded Constructor with fewer parameters
+    public StudentMember(String name, String email, String enrollmentNumber, String course) {
+        this(name, email, enrollmentNumber, course, new int[]{85, 90, 88});
+    }
+
+    // UNIT 2 - TOPIC: Method Overriding
+    // Overriding abstract method getRole() from AcademicPerson
+    @Override
+    public String getRole() {
+        return "STUDENT";
+    }
+
+    // UNIT 2 - TOPIC: Method Overriding from AcademicEntity interface
+    @Override
+    public void displayDetails() {
+        System.out.println("Role: " + getRole());
+        System.out.println("Enrollment No: " + this.enrollmentNumber);
+        System.out.println("Student Name: " + this.name);
+        System.out.println("Email: " + this.email);
+        System.out.println("Course: " + this.course);
+        
+        // Processing array elements
+        System.out.print("Semester Marks: ");
+        for (int mark : this.semesterMarks) {
+            System.out.print(mark + " ");
+        }
+        System.out.println();
+    }
+
+    @Override
+    public String getSummary() {
+        return "[" + getRole() + "] " + this.enrollmentNumber + " - " + this.name + " (" + this.course + ")";
+    }
+
+    // UNIT 2 - TOPIC: Method Overloading (Search methods)
+    // 1. Search by name query
+    public boolean matches(String query) {
+        return this.name.equalsIgnoreCase(query) || this.enrollmentNumber.equalsIgnoreCase(query);
+    }
+
+    // 2. Overloaded: Search by name and course
+    public boolean matches(String query, String filterCourse) {
+        return matches(query) && this.course.equalsIgnoreCase(filterCourse);
+    }
+
+    // Calculate percentage from array of marks
+    public double calculatePercentage() {
+        if (this.semesterMarks.length == 0) return 0.0;
+        int total = 0;
+        for (int mark : this.semesterMarks) {
+            total += mark;
+        }
+        return (double) total / this.semesterMarks.length;
+    }
+
+    // Object class method overriding
     @Override
     public String toString() {
-        return "Person Name: " + name;
+        return getSummary();
     }
 }
 
-// Unit 2: Interface
-interface Printable {
+// UNIT 2 - TOPIC: Inheritance
+// FacultyMember inherits from AcademicPerson
+class FacultyMember extends AcademicPerson {
+    private String department;
+    private String employeeId;
 
-    void printDetails();
-}
-
-// Unit 2: Inheritance (Student inherits Person)
-// Unit 2: Interface Implementation
-class StudentPerson extends Person implements Printable {
-
-    // Unit 2: final variable
-    private final int studentId;
-
-    public StudentPerson(String name, int studentId) {
-
-        // Unit 2: super keyword calls parent constructor
-        super(name);
-
-        this.studentId = studentId;
+    public FacultyMember(String name, String email, String employeeId, String department) {
+        super(name, email);
+        this.employeeId = employeeId;
+        this.department = department;
     }
 
-    // Unit 2: Method Overriding
     @Override
-    void displayRole() {
-        System.out.println("Role: Student");
+    public String getRole() {
+        return "ADMIN_FACULTY";
     }
 
-    // Unit 2: Interface method implementation
     @Override
-    public void printDetails() {
-        System.out.println("ID: " + studentId);
-        System.out.println("Name: " + name);
+    public void displayDetails() {
+        System.out.println("Role: " + getRole());
+        System.out.println("Faculty ID: " + this.employeeId);
+        System.out.println("Faculty Name: " + this.name);
+        System.out.println("Department: " + this.department);
     }
 
-    // Unit 2: Object class method overriding
     @Override
-    public boolean equals(Object obj) {
-
-        if (this == obj) {
-            return true;
-        }
-
-        if (!(obj instanceof StudentPerson)) {
-            return false;
-        }
-
-        StudentPerson other = (StudentPerson) obj;
-
-        return studentId == other.studentId;
-    }
-
-    // Unit 2: Method Overloading
-    public void showStudent(String course) {
-        System.out.println("Course: " + course);
-    }
-
-    public void showStudent(String course, int semester) {
-        System.out.println(
-            "Course: " + course + ", Semester: " + semester
-        );
+    public String getSummary() {
+        return "[" + getRole() + "] " + this.employeeId + " - " + this.name + " (" + this.department + ")";
     }
 }
 
+// Main class demonstrating Unit 2 concepts
 public class StudentOOPDemo {
 
     public static void main(String[] args) {
+        System.out.println("=== UNIT 2: OOP & JAVA FUNDAMENTALS DEMONSTRATION ===");
 
-        StudentPerson student =
-            new StudentPerson("Rahul", 101);
+        // UNIT 2 - TOPIC: Arrays and data handling
+        int[] marksRahul = new int[]{88, 92, 85, 90};
 
-        // Unit 2: Polymorphism
-        // Parent class reference stores child class object
-        Person person = student;
-
-        person.displayRole();
-
-        // Unit 2: Interface reference
-        Printable printable = student;
-        printable.printDetails();
-
-        // Unit 2: final method
-        student.showCategory();
-
-        // Unit 2: Method Overloading
-        student.showStudent("MCA");
-        student.showStudent("MCA", 1);
-
-        // Unit 2: Object class toString() method
-        System.out.println(student.toString());
-
-        // Unit 2: Object class equals() method
-        StudentPerson anotherStudent =
-            new StudentPerson("Rahul", 101);
-
-        System.out.println(
-            "Both students equal: " + student.equals(anotherStudent)
+        // UNIT 2 - TOPIC: Classes and Objects
+        StudentMember student1 = new StudentMember(
+                "Rahul Sharma",
+                "rahul@studenthub.edu",
+                "MCA2026-001",
+                "MCA",
+                marksRahul
         );
+
+        StudentMember student2 = new StudentMember(
+                "Priya Patel",
+                "priya@studenthub.edu",
+                "MCA2026-002",
+                "MCA"
+        );
+
+        FacultyMember faculty = new FacultyMember(
+                "Dr. Amit Verma",
+                "admin@studenthub.edu",
+                "FAC-2026-01",
+                "Computer Science"
+        );
+
+        // UNIT 2 - TOPIC: Polymorphism (Interface reference to object)
+        System.out.println("\n--- Displaying Student 1 Details ---");
+        AcademicEntity entity1 = student1;
+        entity1.displayDetails();
+        System.out.printf("Average Percentage: %.2f%%%n", student1.calculatePercentage());
+
+        System.out.println("\n--- Displaying Faculty Details ---");
+        AcademicEntity entity2 = faculty;
+        entity2.displayDetails();
+
+        // UNIT 2 - TOPIC: Static members demonstration
+        System.out.println("\n--- Static Member Access ---");
+        System.out.println("Total Academic Persons Registered: " + AcademicPerson.getTotalPersonsRegistered());
+
+        // UNIT 2 - TOPIC: Method Overloading demonstration
+        System.out.println("\n--- Method Overloading Search ---");
+        System.out.println("Matches query 'Rahul Sharma': " + student1.matches("Rahul Sharma"));
+        System.out.println("Matches query 'Rahul Sharma' and Course 'MCA': " + student1.matches("Rahul Sharma", "MCA"));
+        System.out.println("Matches query 'Rahul Sharma' and Course 'MBA': " + student1.matches("Rahul Sharma", "MBA"));
+
+        // UNIT 2 - TOPIC: Arrays of Objects
+        System.out.println("\n--- Array of Student Records ---");
+        StudentMember[] studentList = new StudentMember[]{student1, student2};
+        for (StudentMember s : studentList) {
+            System.out.println(" -> " + s.getSummary());
+        }
+
+        System.out.println("=== END OF UNIT 2 DEMONSTRATION ===");
     }
 }

@@ -63,11 +63,39 @@ public class StudentService {
         Student student = getStudentById(id);
 
         student.setName(updatedStudent.getName());
-        student.setEmail(updatedStudent.getEmail());
+        // If email is being changed, ensure it does not conflict with another student
+        if (updatedStudent.getEmail() != null && !updatedStudent.getEmail().equalsIgnoreCase(student.getEmail())) {
+            if (studentRepository.existsByEmail(updatedStudent.getEmail())) {
+                throw new DuplicateEmailException("Email is already registered: " + updatedStudent.getEmail());
+            }
+            student.setEmail(updatedStudent.getEmail());
+        }
         student.setCourse(updatedStudent.getCourse());
         student.setPhone(updatedStudent.getPhone());
+        if (updatedStudent.getGender() != null) {
+            student.setGender(updatedStudent.getGender());
+        }
+        if (updatedStudent.getBirthdate() != null) {
+            student.setBirthdate(updatedStudent.getBirthdate());
+        }
 
         return studentRepository.save(student);
+    }
+
+    // Fetches student profile using user email (for logged-in student)
+    // If not found in student directory, automatically initializes a student profile for the user
+    public Student getStudentByEmail(String email) {
+        return studentRepository.findByEmail(email)
+                .orElseGet(() -> {
+                    Student newStudent = new Student();
+                    newStudent.setEmail(email);
+                    newStudent.setName("Student");
+                    newStudent.setCourse("MCA");
+                    newStudent.setPhone("");
+                    newStudent.setGender("");
+                    newStudent.setBirthdate("");
+                    return studentRepository.save(newStudent);
+                });
     }
 
     // Deletes a student using ID.

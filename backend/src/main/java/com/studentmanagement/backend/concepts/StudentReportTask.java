@@ -1,41 +1,35 @@
+/*
+ * COURSE: Core Java - CAM5001C
+ * UNIT: Unit 3
+ * TOPIC: Packages and Multithreading using Runnable Interface
+ * PURPOSE: Demonstrates task creation using the Runnable interface for student report processing.
+ */
+
 package com.studentmanagement.backend.concepts;
 
-// Unit 3: Multithreading
-// Topic: Creating Threads using Runnable Interface
-
-// Unit 2: Inheritance and Interface
-// Runnable is an interface that must be implemented.
+// UNIT 3 - TOPIC: Multithreading using Runnable interface
 public class StudentReportTask implements Runnable {
 
-    // Unit 2: Constructor
-    private final String studentName;
+    private final String studentIdentifier;
 
-    public StudentReportTask(String studentName) {
-        this.studentName = studentName;
+    public StudentReportTask(String studentIdentifier) {
+        this.studentIdentifier = studentIdentifier;
     }
 
-    // Unit 3: Multithreading
-    // run() contains the task executed by the thread.
+    // UNIT 3 - TOPIC: Runnable run() method
     @Override
     public void run() {
-
-        System.out.println(
-                "Generating report for: " + studentName
-        );
+        System.out.println("[Report Generation Start] Generating PDF grade card for: " 
+                + studentIdentifier + " on thread: " + Thread.currentThread().getName());
 
         try {
-            // Pauses the current thread for 1 second.
-            Thread.sleep(1000);
-
-            System.out.println(
-                    "Report generated for: " + studentName
-            );
+            // Simulate intensive work: fetching grades, rendering charts, compiling PDF
+            Thread.sleep(600);
+            System.out.println("[Report Generation Finish] PDF grade card generated for: " 
+                    + studentIdentifier + " on thread: " + Thread.currentThread().getName());
 
         } catch (InterruptedException exception) {
-
-            // Unit 3: Exception Handling
-            System.out.println("Report generation interrupted.");
-
+            System.err.println("Report generation interrupted: " + exception.getMessage());
             Thread.currentThread().interrupt();
         }
     }

@@ -1,3 +1,10 @@
+/*
+ * COURSE: Core Java - CAM5001C
+ * UNIT: Unit 4
+ * TOPIC: Regular Expressions - Pattern and Matcher Classes
+ * PURPOSE: Demonstrates input validation for student emails and phone numbers.
+ */
+
 package com.studentmanagement.backend.concepts;
 
 // Unit 4: Regular Expressions

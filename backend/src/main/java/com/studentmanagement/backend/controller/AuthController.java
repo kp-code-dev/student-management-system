@@ -51,4 +51,21 @@ public class AuthController {
         // Returns HTTP 200 OK with authentication details.
         return ResponseEntity.ok(authService.login(request));
     }
+
+    // Handles password change for authenticated users
+    @PostMapping("/change-password")
+    public ResponseEntity<java.util.Map<String, String>> changePassword(
+            @Valid @RequestBody com.studentmanagement.backend.dto.auth.ChangePasswordRequest request,
+            org.springframework.security.core.Authentication authentication) {
+
+        if (authentication == null || authentication.getName() == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        authService.changePassword(authentication.getName(), request);
+
+        java.util.Map<String, String> response = new java.util.HashMap<>();
+        response.put("message", "Password changed successfully!");
+        return ResponseEntity.ok(response);
+    }
 }

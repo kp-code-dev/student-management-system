@@ -31,4 +31,7 @@ public interface StudentRepository extends JpaRepository<Student, Long> {
     // The method is automatically implemented by Spring Data JPA.
     boolean existsByEmail(String email);
 
+    // Finds a student by email address.
+    java.util.Optional<Student> findByEmail(String email);
+
 }

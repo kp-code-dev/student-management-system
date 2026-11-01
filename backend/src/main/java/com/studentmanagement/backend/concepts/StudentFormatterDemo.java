@@ -1,3 +1,10 @@
+/*
+ * COURSE: Core Java - CAM5001C
+ * UNIT: Unit 4
+ * TOPIC: Java Utility - Formatter Class
+ * PURPOSE: Demonstrates output formatting for student transcripts and mark sheets.
+ */
+
 package com.studentmanagement.backend.concepts;
 
 import java.util.Formatter;

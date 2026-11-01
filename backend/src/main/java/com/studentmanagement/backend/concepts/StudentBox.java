@@ -1,27 +1,59 @@
+/*
+ * COURSE: Core Java - CAM5001C
+ * UNIT: Unit 4
+ * TOPIC: Generic Classes - StudentBox<T>
+ * PURPOSE: Demonstrates generic type parameters in class definition to provide
+ *          type-safe storage and retrieval of student-related data without casting.
+ */
+
 package com.studentmanagement.backend.concepts;
 
-// Unit 4: Generic Programming
-// Topic: Creating a Generic Class
-
-// T is a type parameter.
-// It allows this class to work with different data types.
+// UNIT 4 - TOPIC: Generic Classes
+// T is a formal type parameter that can be substituted with any object type.
 public class StudentBox<T> {
 
-    // Stores a value of generic type T.
-    private T value;
+    // Stores an object of generic type T
+    private T item;
 
-    // Unit 2: Constructor
-    public StudentBox(T value) {
-        this.value = value;
+    // Parameterized constructor
+    public StudentBox(T item) {
+        this.item = item;
     }
 
-    // Returns the stored value.
-    public T getValue() {
-        return value;
+    // Default constructor
+    public StudentBox() {
     }
 
-    // Updates the stored value.
-    public void setValue(T value) {
-        this.value = value;
+    // Returns item of generic type T
+    public T getItem() {
+        return item;
+    }
+
+    // Sets item of generic type T
+    public void setItem(T item) {
+        this.item = item;
+    }
+
+    @Override
+    public String toString() {
+        return "StudentBox containing [" + (item != null ? item.toString() : "empty") + "]";
+    }
+
+    public static void main(String[] args) {
+        System.out.println("=== UNIT 4: GENERIC CLASS (StudentBox<T>) DEMO ===");
+
+        // Type safety: Box containing String
+        StudentBox<String> nameBox = new StudentBox<>("Rahul Sharma");
+        System.out.println("Name Box: " + nameBox.getItem());
+
+        // Box containing Integer (e.g. Student ID)
+        StudentBox<Integer> idBox = new StudentBox<>(101);
+        System.out.println("ID Box: " + idBox.getItem());
+
+        // Box containing Double (e.g. Grade Point Average)
+        StudentBox<Double> gpaBox = new StudentBox<>(9.45);
+        System.out.println("GPA Box: " + gpaBox.getItem());
+
+        System.out.println("=== END OF GENERIC CLASS DEMO ===");
     }
 }

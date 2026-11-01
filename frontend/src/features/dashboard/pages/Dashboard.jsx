@@ -12,11 +12,11 @@ function Dashboard() {
     try {
       return (
         JSON.parse(localStorage.getItem("user")) || {
-          name: "Admin User",
+          name: "Faculty Member",
         }
       );
     } catch {
-      return { name: "Admin User" };
+      return { name: "Faculty Member" };
     }
   })();
 

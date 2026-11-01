@@ -1,40 +1,55 @@
-package com.studentmanagement.backend.concepts;
+/*
+ * COURSE: Core Java - CAM5001C
+ * UNIT: Unit 3
+ * TOPIC: Multithreading using Thread and Runnable, Thread Lifecycle and Execution
+ * PURPOSE: Demonstrates multithreading concepts by simulating background student
+ *          report generation and asynchronous student data processing.
+ */
 
-// Unit 3: Multithreading
-// Topics: Main Thread, Thread Creation and Thread States
+package com.studentmanagement.backend.concepts;
 
 public class StudentThreadDemo {
 
-    // Unit 2: Class and Method
-    // main() is the entry point of this Java program.
     public static void main(String[] args) {
+        System.out.println("=== UNIT 3: MULTITHREADING DEMONSTRATION ===");
 
-        // Displays the currently running main thread.
-        System.out.println(
-                "Main Thread: " + Thread.currentThread().getName()
-        );
+        // UNIT 3 - TOPIC: Thread lifecycle & Main thread
+        Thread mainThread = Thread.currentThread();
+        System.out.println("Current Main Thread: " + mainThread.getName() + " | Priority: " + mainThread.getPriority());
 
-        // Unit 3: Thread Creation using Thread class.
-        StudentTaskThread studentThread =
-                new StudentTaskThread("Student-Task-Thread");
+        // UNIT 3 - TOPIC: Multithreading using Thread class
+        // Creating background task thread
+        StudentTaskThread dataProcessingThread = new StudentTaskThread("Student-Batch-Processor");
 
-        // Displays the initial thread state.
-        System.out.println("Thread State: " + studentThread.getState());
+        // Thread state before starting
+        System.out.println("State before start(): " + dataProcessingThread.getState()); // NEW
 
-        // Starts the first thread.
-        studentThread.start();
+        // Starting data processing thread
+        dataProcessingThread.start();
+        System.out.println("State after start(): " + dataProcessingThread.getState()); // RUNNABLE / TIMED_WAITING
 
-        // Unit 3: Thread Creation using Runnable interface.
-        StudentReportTask reportTask =
-                new StudentReportTask("Rahul");
+        // UNIT 3 - TOPIC: Multithreading using Runnable interface
+        // Runnable separates task logic from Thread control
+        StudentReportTask reportTask = new StudentReportTask("Rahul Sharma (MCA2026-001)");
+        Thread reportThread = new Thread(reportTask, "Student-Report-Generator");
 
-        Thread reportThread = new Thread(reportTask, "Report-Thread");
-
-        // Starts the second thread.
+        // Starting report generator thread
         reportThread.start();
 
-        // Displays the current state of both threads.
-        System.out.println("Student Thread: " + studentThread.getState());
-        System.out.println("Report Thread: " + reportThread.getState());
+        try {
+            // UNIT 3 - TOPIC: Thread synchronization / join()
+            // Main thread waits for background workers to complete before finishing
+            System.out.println("Main thread waiting for background worker threads to finish...");
+            dataProcessingThread.join();
+            reportThread.join();
+            System.out.println("Background processing thread state after join: " + dataProcessingThread.getState()); // TERMINATED
+            System.out.println("Report generator thread state after join: " + reportThread.getState()); // TERMINATED
+        } catch (InterruptedException e) {
+            System.err.println("Main thread interrupted: " + e.getMessage());
+            Thread.currentThread().interrupt();
+        }
+
+        System.out.println("All student asynchronous tasks completed successfully.");
+        System.out.println("=== END OF UNIT 3 MULTITHREADING DEMONSTRATION ===");
     }
 }

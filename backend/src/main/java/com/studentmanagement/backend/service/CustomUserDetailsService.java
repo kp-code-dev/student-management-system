@@ -34,12 +34,22 @@ public class CustomUserDetailsService implements UserDetailsService {
                         "User not found with email: " + email
                 ));
 
+        // Normalize role name: any user with @studenthub.edu is recognized as ADMIN (Faculty)
+        String emailLower = appUser.getEmail() != null ? appUser.getEmail().trim().toLowerCase() : "";
+        String cleanRole;
+        if (emailLower.endsWith("@studenthub.edu")) {
+            cleanRole = "ADMIN";
+        } else {
+            String rawRole = appUser.getRole() != null ? appUser.getRole() : "STUDENT";
+            cleanRole = rawRole.startsWith("ROLE_") ? rawRole.substring(5) : rawRole;
+        }
+
         // Converts the application user into Spring Security's UserDetails object.
-        // This allows Spring Security to verify the user's password and role.
+        // Spring Security User.builder().roles(...) will automatically add the "ROLE_" prefix.
         return User.builder()
                 .username(appUser.getEmail())
                 .password(appUser.getPassword())
-                .roles(appUser.getRole())
+                .roles(cleanRole)
                 .build();
     }
 }

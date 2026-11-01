@@ -31,12 +31,14 @@ public class JwtService {
 
     // Generates a JWT token for the given user's email.
     public String generateToken(String email) {
+        return generateToken(email, java.util.Collections.emptyMap());
+    }
 
-        // Stores the current date and time.
+    // Generates a JWT token for the given user's email with custom claims (role, userId).
+    public String generateToken(String email, java.util.Map<String, Object> extraClaims) {
         Date now = new Date();
-
-        // Creates, signs and returns the JWT token.
         return Jwts.builder()
+                .claims(extraClaims)
                 .subject(email)
                 .issuedAt(now)
                 .expiration(new Date(now.getTime() + expiration))

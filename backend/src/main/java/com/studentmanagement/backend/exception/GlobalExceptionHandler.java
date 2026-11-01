@@ -49,4 +49,23 @@ public class GlobalExceptionHandler {
         // Returns HTTP 409 Conflict response.
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
+
+    // Handles authentication failures (Bad credentials / invalid login)
+    @ExceptionHandler(org.springframework.security.authentication.BadCredentialsException.class)
+    public ResponseEntity<Map<String, String>> handleBadCredentials(
+            org.springframework.security.authentication.BadCredentialsException exception) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Unauthorized");
+        error.put("message", "Invalid email or password");
+        return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    // Handles generic runtime exceptions (e.g. duplicate faculty ID)
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException exception) {
+        Map<String, String> error = new HashMap<>();
+        error.put("error", "Bad Request");
+        error.put("message", exception.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 }

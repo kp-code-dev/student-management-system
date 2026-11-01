@@ -1,54 +1,82 @@
+/*
+ * COURSE: Core Java - CAM5001C
+ * UNIT: Unit 4
+ * TOPIC: Wildcards in Generics (Upper Bounded, Lower Bounded, and Unbounded Wildcards)
+ * PURPOSE: Demonstrates flexible generic method arguments for processing student marks,
+ *          lists of student records, and numeric collections.
+ */
+
 package com.studentmanagement.backend.concepts;
 
-// Unit 4: Generic Programming
-// Topic: Wildcard Types
-
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class StudentWildcardDemo {
 
-    // Unit 4: Upper Bounded Wildcard
-    // ? extends Number accepts Number or its subclasses.
-    public static void displayNumbers(List<? extends Number> numbers) {
-
-        for (Number number : numbers) {
-            System.out.println(number);
+    // UNIT 4 - TOPIC: Upper Bounded Wildcard (? extends Number)
+    // Accepts List of Number or any subclass of Number (Integer, Double, Float).
+    // Read-only access to numeric values.
+    public static double calculateAverageMarks(List<? extends Number> marksList) {
+        if (marksList == null || marksList.isEmpty()) return 0.0;
+        double sum = 0.0;
+        for (Number n : marksList) {
+            sum += n.doubleValue();
         }
+        return sum / marksList.size();
     }
 
-    // Unit 4: Lower Bounded Wildcard
-    // ? super Integer accepts Integer or its parent types.
-    public static void addNumbers(List<? super Integer> numbers) {
-
-        numbers.add(10);
-        numbers.add(20);
-        numbers.add(30);
-
-        System.out.println(numbers);
+    // UNIT 4 - TOPIC: Lower Bounded Wildcard (? super Integer)
+    // Accepts List of Integer or any superclass of Integer (Number, Object).
+    // Allows safely adding Integer elements to the collection.
+    public static void addDefaultSemesterCredits(List<? super Integer> creditsList) {
+        creditsList.add(20);
+        creditsList.add(22);
+        creditsList.add(24);
+        System.out.println("Added semester credits: " + creditsList);
     }
 
-    // Unit 4: Unbounded Wildcard
-    // ? accepts a list of any data type.
-    public static void displayList(List<?> values) {
-
-        for (Object value : values) {
-            System.out.println(value);
+    // UNIT 4 - TOPIC: Unbounded Wildcard (List<?>)
+    // Accepts a List containing objects of any unknown type.
+    public static void printAnyList(List<?> items) {
+        System.out.print("[");
+        for (int i = 0; i < items.size(); i++) {
+            System.out.print(items.get(i));
+            if (i < items.size() - 1) System.out.print(", ");
         }
+        System.out.println("]");
     }
 
     public static void main(String[] args) {
+        System.out.println("=== UNIT 4: WILDCARDS IN GENERICS DEMONSTRATION ===");
 
-        List<Integer> marks = Arrays.asList(70, 80, 90);
+        // 1. Upper Bounded Wildcard demonstration with Integer marks
+        System.out.println("\n--- 1. Upper Bounded Wildcard (? extends Number) ---");
+        List<Integer> theoryMarks = Arrays.asList(85, 90, 78, 92);
+        System.out.printf("Integer Theory Marks Average: %.2f%n", calculateAverageMarks(theoryMarks));
 
-        List<String> names = Arrays.asList("Rahul", "Amit", "Jay");
+        // Upper Bounded Wildcard with Double GPA values
+        List<Double> gpaScores = Arrays.asList(9.2, 8.8, 9.5, 9.0);
+        System.out.printf("Double GPA Scores Average: %.2f%n", calculateAverageMarks(gpaScores));
 
-        displayNumbers(marks);
+        // 2. Lower Bounded Wildcard demonstration (? super Integer)
+        System.out.println("\n--- 2. Lower Bounded Wildcard (? super Integer) ---");
+        List<Number> numberList = new ArrayList<>();
+        addDefaultSemesterCredits(numberList);
 
-        displayList(names);
+        List<Object> objectList = new ArrayList<>();
+        addDefaultSemesterCredits(objectList);
 
-        List<Number> numbers = new java.util.ArrayList<>();
+        // 3. Unbounded Wildcard demonstration (List<?>)
+        System.out.println("\n--- 3. Unbounded Wildcard (List<?>) ---");
+        List<String> studentNames = Arrays.asList("Rahul Sharma", "Priya Patel", "Amit Verma");
+        System.out.print("Student Names List: ");
+        printAnyList(studentNames);
 
-        addNumbers(numbers);
+        List<Integer> enrollmentIds = Arrays.asList(101, 102, 103);
+        System.out.print("Enrollment IDs List: ");
+        printAnyList(enrollmentIds);
+
+        System.out.println("\n=== END OF WILDCARDS DEMONSTRATION ===");
     }
 }

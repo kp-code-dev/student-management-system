@@ -1,3 +1,10 @@
+/*
+ * COURSE: Core Java - CAM5001C
+ * UNIT: Unit 4
+ * TOPIC: Java Utility Classes - Date, TimeZone, Calendar and GregorianCalendar
+ * PURPOSE: Demonstrates date and time management for academic schedules and exam sessions.
+ */
+
 package com.studentmanagement.backend.concepts;
 
 // Unit 4: Java Utility Classes

@@ -3,15 +3,18 @@ import { toast } from "react-toastify";
 import {
   FiMail,
   FiLock,
+  FiUser,
   FiEye,
   FiEyeOff,
   FiArrowRight,
   FiShield,
-  FiCheckCircle,
 } from "react-icons/fi";
+import { loginUser, registerUser } from "@/features/auth/authService";
 
 function Login() {
+  const [isRegisterMode, setIsRegisterMode] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(true);
@@ -27,44 +30,87 @@ function Login() {
       return;
     }
 
+    if (isRegisterMode && !name.trim()) {
+      setError("Please enter your full name for registration.");
+      return;
+    }
+
     try {
       setLoading(true);
-      const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+
+      if (isRegisterMode) {
+        // Registering creates a STUDENT role strictly on backend
+        const regData = await registerUser({
+          name: name.trim(),
           email: email.trim(),
           password: password,
-        }),
-      });
+        });
 
-      const data = await response.json().catch(() => null);
+        // Faculty domain check or backend returned role
+        const isFacultyDomain = email.trim().toLowerCase().endsWith("@studenthub.edu");
+        const detectedRole = isFacultyDomain ? "ADMIN" : (regData?.role || "STUDENT").toUpperCase().replace("ROLE_", "");
 
-      if (!response.ok) {
-        throw new Error(data?.message || "Invalid credentials or unauthorized.");
+        if (regData?.token) {
+          localStorage.setItem("token", regData.token);
+        }
+
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            id: regData?.id,
+            name: regData?.name || name,
+            email: regData?.email || email,
+            role: detectedRole,
+          })
+        );
+        localStorage.setItem("isAuthenticated", "true");
+
+        if (detectedRole === "ADMIN") {
+          toast.success("Faculty account registered successfully! Welcome to Faculty Portal.");
+          window.location.href = "/dashboard";
+        } else {
+          toast.success("Account created successfully as Student! Welcome to StudentHub.");
+          window.location.href = "/student-dashboard";
+        }
+      } else {
+        // Login mode
+        const data = await loginUser({
+          email: email.trim(),
+          password: password,
+        });
+
+        if (data?.token) {
+          localStorage.setItem("token", data.token);
+        }
+
+        // Backend returns "ADMIN" or "STUDENT", or detect by @studenthub.edu domain
+        const isFacultyDomain = email.trim().toLowerCase().endsWith("@studenthub.edu");
+        const role = isFacultyDomain ? "ADMIN" : (data?.role || "STUDENT").toUpperCase().replace("ROLE_", "");
+        
+        localStorage.setItem(
+          "user",
+          JSON.stringify({
+            id: data?.id,
+            name: data?.name || (role === "ADMIN" ? "Faculty Administrator" : "Student User"),
+            email: data?.email || email,
+            role: role,
+          })
+        );
+        localStorage.setItem("isAuthenticated", "true");
+
+        toast.success(`Welcome back, ${data?.name || (role === "ADMIN" ? "Faculty" : "Student")}!`);
+
+        // Role-based redirect: Faculty/Admin -> /dashboard, Student -> /student-dashboard
+        if (role === "ADMIN") {
+          window.location.href = "/dashboard";
+        } else {
+          window.location.href = "/student-dashboard";
+        }
       }
-
-      if (data?.token) {
-        localStorage.setItem("token", data.token);
-      }
-      localStorage.setItem(
-        "user",
-        JSON.stringify({
-          id: data?.id,
-          name: data?.name || "Admin User",
-          email: data?.email || email,
-          role: data?.role || "ADMIN",
-        })
-      );
-      localStorage.setItem("isAuthenticated", "true");
-
-      toast.success("Welcome back! Login successful.");
-      window.location.href = "/dashboard";
     } catch (err) {
-      setError(err.message || "Unable to connect to the authentication server.");
-      toast.error(err.message || "Unable to connect to the authentication server.");
+      const errMsg = err.message || "Authentication failed. Please verify credentials.";
+      setError(errMsg);
+      toast.error(errMsg);
     } finally {
       setLoading(false);
     }
@@ -99,10 +145,10 @@ function Login() {
 
           <div className="mt-2 flex items-center gap-2">
             <span className="rounded-full bg-[#7bd0ff]/10 px-2.5 py-0.5 font-mono text-[11px] font-semibold tracking-widest text-[#7bd0ff] backdrop-blur-sm">
-              Glassy OS V5
+              MCA Semester 1
             </span>
             <span className="text-xs text-[#908fa0]">•</span>
-            <p className="text-xs text-[#c7c4d7]">Student Management Portal</p>
+            <p className="text-xs text-[#c7c4d7]">Role-Based Academic Portal</p>
           </div>
         </header>
 
@@ -115,13 +161,15 @@ function Login() {
           <div className="mb-6">
             <div className="mb-2.5 inline-flex items-center gap-1.5 rounded-full bg-[#262a34]/80 px-2.5 py-0.5 font-mono text-[11px] font-medium uppercase tracking-wider text-[#7bd0ff]">
               <span className="h-1.5 w-1.5 animate-ping rounded-full bg-[#7bd0ff]" />
-              <span>Welcome Back</span>
+              <span>{isRegisterMode ? "New Student Registration" : "Portal Authentication"}</span>
             </div>
             <h2 className="text-xl font-bold tracking-tight text-[#dfe2ef]">
-              Sign in to your account
+              {isRegisterMode ? "Create Student Account" : "Sign in to your account"}
             </h2>
             <p className="mt-1 text-xs text-[#c7c4d7]">
-              Enter your credentials to access the academic registry.
+              {isRegisterMode
+                ? "Enter your details to create a student portal login."
+                : "Students and Faculty: enter institutional credentials."}
             </p>
           </div>
 
@@ -133,6 +181,32 @@ function Login() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Full Name in Register Mode */}
+            {isRegisterMode && (
+              <div className="space-y-1.5">
+                <label
+                  htmlFor="name"
+                  className="block font-mono text-[11px] font-medium tracking-wide text-[#c7c4d7]"
+                >
+                  Full Student Name
+                </label>
+                <div className="group relative">
+                  <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#908fa0] transition-colors group-focus-within:text-[#7bd0ff]">
+                    <FiUser size={16} />
+                  </div>
+                  <input
+                    id="name"
+                    type="text"
+                    required
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder="Rahul Sharma"
+                    className="h-11 w-full rounded-xl border border-white/10 bg-[#0a0e17]/70 pl-10 pr-4 text-sm text-[#dfe2ef] outline-none backdrop-blur-md transition-all placeholder:text-[#908fa0]/60 focus:border-[#7bd0ff]/50 focus:bg-[#0a0e17]/90 focus:ring-1 focus:ring-[#7bd0ff]/30"
+                  />
+                </div>
+              </div>
+            )}
+
             {/* Institutional Email */}
             <div className="space-y-1.5">
               <label
@@ -151,7 +225,7 @@ function Login() {
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="admin@studenthub.edu"
+                  placeholder="name@studenthub.edu"
                   className="h-11 w-full rounded-xl border border-white/10 bg-[#0a0e17]/70 pl-10 pr-24 text-sm text-[#dfe2ef] outline-none backdrop-blur-md transition-all placeholder:text-[#908fa0]/60 focus:border-[#7bd0ff]/50 focus:bg-[#0a0e17]/90 focus:ring-1 focus:ring-[#7bd0ff]/30"
                 />
                 <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
@@ -171,12 +245,11 @@ function Login() {
                 >
                   Access Key / Password
                 </label>
-                <button
-                  type="button"
-                  className="font-mono text-[11px] text-[#7bd0ff] transition hover:text-[#c4e7ff]"
-                >
-                  Forgot password?
-                </button>
+                {!isRegisterMode && (
+                  <span className="font-mono text-[11px] text-[#908fa0]">
+                    Min 8 chars
+                  </span>
+                )}
               </div>
               <div className="group relative">
                 <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-[#908fa0] transition-colors group-focus-within:text-[#7bd0ff]">
@@ -217,7 +290,7 @@ function Login() {
               </label>
               <span className="flex items-center gap-1.5 rounded-full bg-[#262a34]/60 px-2 py-0.5 font-mono text-[10px] text-[#908fa0]">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#7bd0ff]" />
-                TLS 1.3
+                JWT Auth
               </span>
             </div>
 
@@ -237,11 +310,27 @@ function Login() {
                     </>
                   ) : (
                     <>
-                      Sign In
+                      {isRegisterMode ? "Create Account" : "Sign In"}
                       <FiArrowRight className="transition-transform group-hover:translate-x-1" />
                     </>
                   )}
                 </span>
+              </button>
+            </div>
+
+            {/* Switch between Login and Student Register */}
+            <div className="pt-3 text-center">
+              <button
+                type="button"
+                onClick={() => {
+                  setIsRegisterMode(!isRegisterMode);
+                  setError("");
+                }}
+                className="font-mono text-xs text-[#7bd0ff] transition hover:underline"
+              >
+                {isRegisterMode
+                  ? "Already have an account? Sign in here"
+                  : "New Student? Create a student account"}
               </button>
             </div>
           </form>
@@ -249,13 +338,13 @@ function Login() {
           {/* Security micro badge */}
           <div className="mt-6 flex items-center justify-center gap-2 border-t border-white/10 pt-4 text-[11px] text-[#c7c4d7]">
             <FiShield className="text-[#7bd0ff]" />
-            <span>Secured with Spring Boot JWT Authentication</span>
+            <span>Secured with Spring Security & Role-Based JWT</span>
           </div>
         </section>
 
         {/* Global Footer Meta */}
         <footer className="mt-8 text-center text-xs text-[#908fa0]">
-          <p>© 2026 StudentHub. All rights reserved.</p>
+          <p>© 2026 StudentHub. Core Java CAM5001C Academic Project.</p>
         </footer>
       </div>
     </main>

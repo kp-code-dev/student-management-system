@@ -29,9 +29,10 @@ public class AppUser {
     @Column(nullable = false)
     private String password;
 
-    // Assigns USER as the default role.
+    // Assigns STUDENT as the default role for registered users.
+    // Allowed values: "ROLE_FACULTY", "ROLE_STUDENT" (or normalized "ADMIN", "STUDENT").
     @Column(nullable = false)
-    private String role = "USER";
+    private String role = "STUDENT";
 
     // Default constructor required by JPA.
     public AppUser() {
